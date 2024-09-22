@@ -2,11 +2,18 @@ import express, {Request, Response} from 'express';
 import userRouter from './routes/user.js';
 import { CustomError } from './utils/error.js';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 const app = express();
 const PORT = 3000;
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(cors({
+    origin: 'http://localhost:5173', // for access from anywhere, use '*'
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+}))
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

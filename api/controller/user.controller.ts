@@ -3,9 +3,7 @@ import { PrismaClient, User } from '@prisma/client';
 import { errorHandler } from '../utils/error.js';
 import bcryptjs from 'bcryptjs';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { access } from 'fs';
-import { JsonArray } from '@prisma/client/runtime/library';
-import { Jwt } from 'jsonwebtoken';
+import { PrismaClientUnknownRequestError } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -21,32 +19,38 @@ export const getUsers = (req: Request, res: Response) => {
 
 export const regUser = async (req: Request, res: Response, next: Function) => {
     try {
-    // console.log("Request body:", req);
-    const { name, email, password } = req.body;
-    const salt = bcryptjs.genSaltSync(10);
-    const hashedPassword = bcryptjs.hashSync(password, salt);
-    const user = await prisma.user.create({
-        data: {
-            name,
-            email,
-            password: hashedPassword
-        }
-    });
+        // console.log("Request body:", req);
+        const { name, email, password } = req.body;
+        const existing = await prisma.user.findUnique({ where: {email} });
+        if (existing) {
+            next(errorHandler(400, "User with this email or username already exists"));
+            return
+        };
+        const salt = bcryptjs.genSaltSync(10);
+        const hashedPassword = bcryptjs.hashSync(password, salt);
+        const user = await prisma.user.create({
+            data: {
+                name,
+                email,
+                password: hashedPassword
+            }
+        });
 
     res.status(201).json({message: "User created successfully."});
     } catch (error) {
-        if (error.code === 'P2002') {
-            next(errorHandler(400, "User with this email already exists."));
-        }
+        // if (error.code === '') {
+        // console.log(error);
+            // next(errorHandler(400, "User with this email already exists.",error));
+        // }
         // console.error("Error creating user:", error);
-        next(errorHandler(500, "An error occurred while creating the user. Please try again later."));
+        next(errorHandler(500, "An error occurred while creating the user. Please try again later.", error));
     }
 };
 
 export const loginUser = async(req: Request, res: Response, next: Function) => {
     try {
-        const { name, email, password } = req.body;
-        const user = await prisma.user.findUnique({where: {name}});
+        const { email, password } = req.body;
+        const user = await prisma.user.findUnique({where: {email}});
         if (!user) return res.status(401).json({message: "Invalid credentials"});
 
         const isPasswordValid = await bcryptjs.compare(password, user.password);

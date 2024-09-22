@@ -3,8 +3,7 @@ import { getUsers, regUser, loginUser, refreshToken, authRequire } from "../cont
 
 const router = Router();
 
-router.get("/", getUsers)
-.post("/", regUser);
+router.post("/signup", regUser);
 
 router.post("/login", loginUser);
 

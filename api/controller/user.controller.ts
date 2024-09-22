@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
-import {PrismaClient} from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { errorHandler } from '../utils/error.js';
 import bcryptjs from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { access } from 'fs';
+import { JsonArray } from '@prisma/client/runtime/library';
+import { Jwt } from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -64,5 +66,34 @@ export const loginUser = async(req: Request, res: Response, next: Function) => {
     }
 }
 
-export const refreshToken = (req: Request, res: Response, next: Function) {
-})
+export const refreshToken = (req: Request, res: Response, next: Function)=> {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) return res.sendStatus(401);
+
+    jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err: any, user: JwtPayload) =>{
+        if (err) return res.sendStatus(403);
+
+        const newAccessToken = jwt.sign({userId: user.id}, JWT_SECRET, {expiresIn: '15m'});
+        res.json({accessToken: newAccessToken});
+    });
+};
+
+interface ReqWithUser extends Request {
+    user: JwtPayload
+}
+
+export const authRequire = (req: Request, res: Response, next: Function) =>{
+    const authHeader = req.headers['authorization'];
+    console.log("Auth header:", authHeader);
+    // we are doing .split(' ')[1] because the authHeader is in the format "Bearer <token>"
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, JWT_SECRET, (err, user: JwtPayload) => {
+        if (err) return res.sendStatus(403);
+        let reqWithUser = req as ReqWithUser;
+        reqWithUser.user = user as JwtPayload;
+        next();
+    })
+}

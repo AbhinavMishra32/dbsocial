@@ -53,12 +53,14 @@ export const loginUser = async(req: Request, res: Response, next: Function) => {
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            sameSite: 'strict',
+            secure: false,
+            sameSite: 'none',
             maxAge: 7 * 24 * 3600000, // 7 days
         })
         res.json({
             id: user.id,
             token: accessToken,
+            refreshToken: refreshToken,
             name: user.name,
             email: user.email
         });

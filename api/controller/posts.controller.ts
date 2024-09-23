@@ -9,11 +9,11 @@ interface RequestWithAddedUser extends Request {
 export const makePost = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const reqWithAddedUser = req as RequestWithAddedUser;
-        const { content } = reqWithAddedUser.body;
+        const { content, title } = reqWithAddedUser.body;
         const post = await prisma.post.create({
             data: {
-                title: 'Default Title',
                 content,
+                title,
                 author: {
                     connect: { id: reqWithAddedUser.addedUser.userId },
                 },
@@ -30,7 +30,6 @@ export const getPost = async (req: Request, res: Response, next: NextFunction) =
     try {
         const reqWithAddedUser = req as RequestWithAddedUser;
         const posts = await prisma.post.findMany({where: {authorId: reqWithAddedUser.addedUser.userId}});
-        console.log(posts);
 
         res.status(200).json({posts});
     } catch (error) {

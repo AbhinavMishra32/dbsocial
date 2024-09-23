@@ -13,7 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 
 const api = axios.create({
-    baseURL: "http://localhost:3000" // put this in env for hosting
+    baseURL: "http://localhost:3000", // put this in env for hosting
+    withCredentials: true,
 });
 
 const schema = z.object({
@@ -47,21 +48,25 @@ const SignUp = () => {
       const response = await api.post("/api/user/login", {
         name: data.username,
         password: data.password,
+      },{
+        withCredentials: true,
       });
       console.log(response.data);
       const token = response.data.token;
+      console.log("Token: ", token);
+      console.log("Refresh token: ", response.data.refreshToken);
       setUser({
         id: response.data.id,
         token,
         username: response.data.name,
         email: response.data.email,
       });
-      console.log("User set:", {
-        id: response.data.id,
-        token,
-        username: response.data.name,
-        email: response.data.email,
-      });
+      // console.log("User set:", {
+      //   id: response.data.id,
+      //   token,
+      //   username: response.data.name,
+      //   email: response.data.email,
+      // });
       setError(null);
       navigate("/dashboard");
     } catch (error) {

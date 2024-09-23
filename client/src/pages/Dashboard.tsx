@@ -3,10 +3,10 @@ import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import {api} from '../services/axios';
-import { AxiosError } from 'axios';
+import PostsView from '../components/PostsView';
 
 const Dashboard = () => {
-  const { user } = useUser();
+  const { setUser, user } = useUser();
   const navigate = useNavigate();
   useEffect(() => {
     if (!user) {
@@ -18,6 +18,7 @@ const Dashboard = () => {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(true);
 
   const handlePostSubmit = async (e: React.FormEvent) => {
@@ -25,7 +26,7 @@ const Dashboard = () => {
     try {
       const response = await api.post(
         "/api/posts",
-        { content: newPost },
+        { content: newPost, title },
         {
           headers: {
             Authorization: `Bearer ${user?.token}`,
@@ -37,8 +38,11 @@ const Dashboard = () => {
       setPosts([...posts, ...updatedPosts.data]);
       // setLoading(false);
     } catch (err) {
-      const er = err as AxiosError;
-      setError(er.response?.data.message);
+      if (err.response?.status === 403) {
+        setUser(null);
+      }
+      console.error("Error creating post: ", err.response);
+      setError(err.response?.data);
     }
   };
 
@@ -48,22 +52,29 @@ const Dashboard = () => {
         const response = await api.get('/api/posts', {
           headers: {
             Authorization: `Bearer ${user?.token}`,
-          }
+          },
+          withCredentials: true,
         });
         console.log("Posts: ", response.data.posts);
         setPosts(response.data.posts);
       }
       catch (error) {
+        if (error.response?.status === 403) {
+          setUser(null);
+        }
         console.error("Error fetching posts: ", error);
       }
       finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
     fetchPosts();
   }, []);
 
+  const refreshToken = document.cookie.split('; ').find(row => row.startsWith('refreshToken='));
+  const refreshTokenValue = refreshToken ? refreshToken.split('=')[1] : null;
+  console.log("Refresh token: ", refreshTokenValue);
   return (
     <>
       <div>
@@ -71,16 +82,19 @@ const Dashboard = () => {
         <p>Welcome {user?.username}</p>
         <p>Email: {user?.email}</p>
       </div>
-      <textarea onChange={(e) => {setNewPost(e.target.value)}} value={newPost}>
+      <textarea onChange={(e) => {setNewPost(e.target.value)}} value={newPost} placeholder='Enter Post'>
       </textarea>
+      <input type = "text" onChange = {(e) => {setTitle(e.target.value)}} value = {title} placeholder='Title'/>
       <Button onClick={handlePostSubmit}>Post</Button>
       {error && (
         <div>
           <p>{error}</p>
         </div>
       )}
-    </>
-  );
+      // get refreshToken from cookie:
+        <PostsView posts={posts} isLoading={loading}/>
+  </>
+  )
 }
 
 export default Dashboard;

@@ -11,11 +11,8 @@ import axios, { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import { api } from '../services/axios';
 
-const api = axios.create({
-    baseURL: "http://localhost:3000", // put this in env for hosting
-    withCredentials: true,
-});
 
 const schema = z.object({
     username: z.string().min(4, {message: "Username must contain at least 4 characters"}).max(25, {message: "Username should be under 25 characters"}), // this is for sign up 

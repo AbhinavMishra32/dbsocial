@@ -52,8 +52,7 @@ const Dashboard = () => {
         const response = await api.get('/api/posts', {
           headers: {
             Authorization: `Bearer ${user?.token}`,
-          },
-          withCredentials: true,
+          }
         });
         console.log("Posts: ", response.data.posts);
         setPosts(response.data.posts);
@@ -91,7 +90,6 @@ const Dashboard = () => {
           <p>{error}</p>
         </div>
       )}
-      // get refreshToken from cookie:
         <PostsView posts={posts} isLoading={loading}/>
   </>
   )

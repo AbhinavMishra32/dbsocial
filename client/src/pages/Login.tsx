@@ -7,59 +7,102 @@ import { Label } from '../components/ui/label';
 import {Button} from "../components/ui/button";
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { AlertCircle } from 'lucide-react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 const api = axios.create({
     baseURL: "http://localhost:3000" // put this in env for hosting
 });
 
 const schema = z.object({
-    // username: z.string().min(4).max(25), // this is for sign up 
-    email: z.string().email(),
+    username: z.string().min(4, {message: "Username must contain at least 4 characters"}).max(25, {message: "Username should be under 25 characters"}), // this is for sign up 
     password: z.string().min(8, { message: "Password must contain at least 8 characters" }),
 });
 
 type FormFields = z.infer<typeof schema>;
 
-const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
-    try {
-        const response = await api.post('/api/user/login', {
-            email: data.email, 
-            password: data.password
-        });
-        console.log(response.data);
-    } catch (error) {
-        console.log(error);
-    }
-    // console.log(data);
-}
+const SignUp = () => {
+  const [error, setError] = useState<string | null>(null);
+  const { user, setUser } = useUser();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormFields>({
+    resolver: zodResolver(schema), // This makes it so that zod is the one validating if values are within rules or not. not using the default way hook forms do.
+  });
+  const navigate = useNavigate();
 
-const Login = () => {
-    const {
-      register,
-      handleSubmit,
-      formState: { errors, isSubmitting },
-    } = useForm<FormFields>({
-        resolver: zodResolver(schema), // This makes it so that zod is the one validating if values are within rules or not. not using the default way hook forms do.
-    });
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await api.post("/api/user/login", {
+        name: data.username,
+        password: data.password,
+      });
+      console.log(response.data);
+      const token = response.data.token;
+      setUser({
+        id: response.data.id,
+        token,
+        username: response.data.name,
+        email: response.data.email,
+      });
+      console.log("User set:", {
+        id: response.data.id,
+        token,
+        username: response.data.name,
+        email: response.data.email,
+      });
+      setError(null);
+      navigate("/dashboard");
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const err = error as AxiosError;
+        setError(err.response?.data.message);
+        console.log(err.response?.data.message);
+      } else {
+        setError(
+          "An error occurred while creating the user. Please try again later."
+        );
+      }
+    }
+  };
+  useEffect(() => {
+    console.log("User in useEffect: ", user);
+  }, [user])
+
   return (
     <Card className="w-1/3 mx-auto mt-20">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>Login to access the website</CardDescription>
+        <CardTitle>Sign in</CardTitle>
+        <CardDescription>Sign in to access Vibely</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">Email</Label>
-              <Input {...register("email")} id="email" placeholder="Email" />
-              {errors.email && (
+              <Label htmlFor="email">Username</Label>
+              <Input
+                {...register("username")}
+                id="username"
+                placeholder="Username"
+              />
+              {errors.username && (
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4"></AlertCircle>
                   <AlertDescription>
-                    {errors.email.message && <p>{errors.email.message}</p>}
+                    {errors.username.message && (
+                      <p>{errors.username.message}</p>
+                    )}
                   </AlertDescription>
                 </Alert>
               )}
@@ -68,6 +111,7 @@ const Login = () => {
               <Label htmlFor="password">Password</Label>
               <Input
                 {...register("password")}
+                type="password"
                 id="password"
                 placeholder="Password"
               />
@@ -84,12 +128,22 @@ const Login = () => {
             </div>
           </div>
         </CardContent>
-        <CardFooter>
-          <Button disabled={isSubmitting} className="w-full">{isSubmitting? "Loading..." : "Login"}</Button>
+        <CardFooter className="flex flex-col space-y-4">
+          <Button disabled={isSubmitting} className="w-full">
+            {isSubmitting ? "Loading..." : "Sign in"}
+          </Button>
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4"></AlertCircle>
+              <AlertDescription>
+                <p>{error}</p>
+              </AlertDescription>
+            </Alert>
+          )}
         </CardFooter>
       </form>
     </Card>
   );
-}
+};
 
-export default Login
+export default SignUp

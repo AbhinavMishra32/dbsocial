@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '../components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import axios, { AxiosError } from 'axios';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const api = axios.create({
     baseURL: "http://localhost:3000" // put this in env for hosting
@@ -22,10 +23,20 @@ const schema = z.object({
 
 type FormFields = z.infer<typeof schema>;
 
-const [error, setError] = useState<string | null>(null);
+const SignUp = () => {
+  const [error, setError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormFields>({
+    resolver: zodResolver(schema), // This makes it so that zod is the one validating if values are within rules or not. not using the default way hook forms do.
+  });
 
-const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
+  const navigate = useNavigate();
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
       const response = await api.post("/api/user/signup", {
         name: data.username,
@@ -33,27 +44,24 @@ const onSubmit: SubmitHandler<FormFields> = async (data) => {
         password: data.password,
       });
       console.log(response.data);
+      setError(null);
+      navigate("/login");
     } catch (error) {
-      if(axios.isAxiosError(error) && error.response){
+      if (axios.isAxiosError(error) && error.response) {
         const err = error as AxiosError;
         setError(err.response?.data.message);
         console.log(err.response?.data.message);
-      }
-      else{
-        setError("An error occurred while creating the user. Please try again later.");
-        console.log("An error occurred while creating the user. Please try again later.");
+      } else {
+        setError(
+          "An error occurred while creating the user. Please try again later."
+        );
+        console.log(
+          "An error occurred while creating the user. Please try again later."
+        );
       }
     }
-}
+  };
 
-const Login = () => {
-    const {
-      register,
-      handleSubmit,
-      formState: { errors, isSubmitting },
-    } = useForm<FormFields>({
-        resolver: zodResolver(schema), // This makes it so that zod is the one validating if values are within rules or not. not using the default way hook forms do.
-    });
   return (
     <Card className="w-1/3 mx-auto mt-20">
       <CardHeader>
@@ -97,6 +105,7 @@ const Login = () => {
               <Label htmlFor="password">Password</Label>
               <Input
                 {...register("password")}
+                type="password"
                 id="password"
                 placeholder="Password"
               />
@@ -113,20 +122,22 @@ const Login = () => {
             </div>
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex flex-col space-y-4">
           <Button disabled={isSubmitting} className="w-full">
             {isSubmitting ? "Loading..." : "Create Account"}
           </Button>
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4"></AlertCircle>
-            <AlertDescription>
-              {error && <p>{error}</p>}
-            </AlertDescription>
-          </Alert>
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4"></AlertCircle>
+              <AlertDescription>
+                <p>{error}</p>
+              </AlertDescription>
+            </Alert>
+          )}
         </CardFooter>
       </form>
     </Card>
   );
-}
+};
 
-export default Login
+export default SignUp

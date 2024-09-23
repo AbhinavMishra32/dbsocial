@@ -1,31 +1,28 @@
 import { Request, Response } from 'express';
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { errorHandler } from '../utils/error.js';
 import bcryptjs from 'bcryptjs';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { PrismaClientUnknownRequestError } from '@prisma/client/runtime/library';
+import { JWT_SECRET, REFRESH_TOKEN_SECRET } from '../config.js';
+import prisma from '../prisma.js';
 
-const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET;
-const REFRESH_TOKEN_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET || !REFRESH_TOKEN_SECRET) {
-    throw new Error("JWT_SECRET or REFRESH_TOKEN_SECRET is not defined");
-}
-
-export const getUsers = (req: Request, res: Response) => {
-    const users = prisma.user.findMany();
-    res.json(users);
-}
 
 export const regUser = async (req: Request, res: Response, next: Function) => {
     try {
         // console.log("Request body:", req);
-        const { name, email, password } = req.body;
-        const existing = await prisma.user.findUnique({ where: {email} });
+        const { name, email, username, password } = req.body;
+        const existing = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { email },
+                    { name }
+                ]
+            }
+        });
         if (existing) {
             next(errorHandler(400, "User with this email or username already exists"));
-            return
-        };
+            return;
+        }
         const salt = bcryptjs.genSaltSync(10);
         const hashedPassword = bcryptjs.hashSync(password, salt);
         const user = await prisma.user.create({
@@ -38,19 +35,14 @@ export const regUser = async (req: Request, res: Response, next: Function) => {
 
     res.status(201).json({message: "User created successfully."});
     } catch (error) {
-        // if (error.code === '') {
-        // console.log(error);
-            // next(errorHandler(400, "User with this email already exists.",error));
-        // }
-        // console.error("Error creating user:", error);
-        next(errorHandler(500, "An error occurred while creating the user. Please try again later.", error));
+        next(errorHandler(500, "An error occurred while creating the user. Please try again later."));
     }
 };
 
 export const loginUser = async(req: Request, res: Response, next: Function) => {
     try {
-        const { email, password } = req.body;
-        const user = await prisma.user.findUnique({where: {email}});
+        const { name, password } = req.body;
+        const user = await prisma.user.findUnique({where: {name}});
         if (!user) return res.status(401).json({message: "Invalid credentials"});
 
         const isPasswordValid = await bcryptjs.compare(password, user.password);
@@ -62,9 +54,14 @@ export const loginUser = async(req: Request, res: Response, next: Function) => {
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             sameSite: 'strict',
-            maxAge: 7 * 24* 3600000,
+            maxAge: 7 * 24 * 3600000, // 7 days
         })
-        res.json({accessToken});
+        res.json({
+            id: user.id,
+            token: accessToken,
+            name: user.name,
+            email: user.email
+        });
     } catch (error) {
         next(errorHandler(500, "An error occurred while logging in. Please try again later."));
     }
@@ -94,10 +91,15 @@ export const authRequire = (req: Request, res: Response, next: Function) =>{
 
     if (!token) return res.sendStatus(401);
 
-    jwt.verify(token, JWT_SECRET, (err, user: JwtPayload) => {
-        if (err) return res.sendStatus(403);
-        let reqWithUser = req as ReqWithUser;
-        reqWithUser.user = user as JwtPayload;
-        next();
-    })
+    try {
+        jwt.verify(token, JWT_SECRET, (err, user: JwtPayload) => {
+            if (err) return res.sendStatus(403);
+            let reqWithUser = req as ReqWithUser;
+            reqWithUser.user = user as JwtPayload;
+            next();
+        })
+    }
+    catch (error) {
+        next(errorHandler(401, "Token is invalid"));
+    }
 }

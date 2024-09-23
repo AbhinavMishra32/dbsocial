@@ -51,17 +51,16 @@ export const loginUser = async(req: Request, res: Response, next: Function) => {
         const accessToken = jwt.sign({userId: user.id}, JWT_SECRET, {expiresIn: '15m'});
         const refreshToken = jwt.sign({userId: user.id}, REFRESH_TOKEN_SECRET, {expiresIn: '7d'});
 
-        // res.cookie('refreshToken', refreshToken, {
-        //     httpOnly: true,
-        //     secure: false,
-        //     sameSite: 'none',
-        //     maxAge: 7 * 24 * 3600000, // 7 days
-        // })
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'none',
+            maxAge: 7 * 24 * 3600000, // 7 days
+        })
         res.json({
             id: user.id,
-            // token: accessToken,
-            // refreshToken: refreshToken,
-            token: refreshToken,  // as using normal token and refresh token was causing too much hassle so for now using refresh token as token
+            token: accessToken,
+            refreshToken: refreshToken,
             name: user.name,
             email: user.email
         });

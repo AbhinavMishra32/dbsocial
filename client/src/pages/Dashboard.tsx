@@ -47,29 +47,29 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await api.get('/api/posts', {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
+    if(user?.token) {
+      const fetchPosts = async () => {
+        try {
+          const response = await api.get("/api/posts", {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+            },
+          });
+          console.log("Posts: ", response.data.posts);
+          setPosts(response.data.posts);
+        } catch (error) {
+          if (error.response?.status === 403) {
+            setUser(null);
           }
-        });
-        console.log("Posts: ", response.data.posts);
-        setPosts(response.data.posts);
-      }
-      catch (error) {
-        if (error.response?.status === 403) {
-          setUser(null);
+          console.error("Error fetching posts: ", error);
         }
-        console.error("Error fetching posts: ", error);
-      }
-      finally {
-        // setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, []);
+      };
+      fetchPosts();
+    }
+    else {
+      setLoading(false);
+    }
+  }, [user, navigate]);
 
   const refreshToken = document.cookie.split('; ').find(row => row.startsWith('refreshToken='));
   const refreshTokenValue = refreshToken ? refreshToken.split('=')[1] : null;

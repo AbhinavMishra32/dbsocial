@@ -18,11 +18,13 @@ const Dashboard = () => {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const handlePostSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await api.post(
-        "/posts",
+        "/api/posts",
         { content: newPost },
         {
           headers: {
@@ -31,13 +33,36 @@ const Dashboard = () => {
         }
       );
       console.log("Response from server: ", response);
-      const updatedPosts = await api.get("/posts");
+      const updatedPosts = await api.get("/api/posts");
       setPosts([...posts, ...updatedPosts.data]);
+      // setLoading(false);
     } catch (err) {
       const er = err as AxiosError;
       setError(er.response?.data.message);
     }
   };
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await api.get('/api/posts', {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          }
+        });
+        console.log("Posts: ", response.data.posts);
+        setPosts(response.data.posts);
+      }
+      catch (error) {
+        console.error("Error fetching posts: ", error);
+      }
+      finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   return (
     <>

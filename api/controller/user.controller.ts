@@ -80,12 +80,11 @@ export const refreshToken = (req: Request, res: Response, next: Function)=> {
 };
 
 interface ReqWithUser extends Request {
-    user: JwtPayload
+    addedUser: JwtPayload
 }
 
 export const authRequire = (req: Request, res: Response, next: Function) =>{
     const authHeader = req.headers['authorization'];
-    console.log("Auth header:", authHeader);
     // we are doing .split(' ')[1] because the authHeader is in the format "Bearer <token>"
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -95,7 +94,8 @@ export const authRequire = (req: Request, res: Response, next: Function) =>{
         jwt.verify(token, JWT_SECRET, (err, user: JwtPayload) => {
             if (err) return res.sendStatus(403);
             let reqWithUser = req as ReqWithUser;
-            reqWithUser.user = user as JwtPayload;
+            reqWithUser.addedUser = user as JwtPayload;
+            // console.log("addedUser in authRequire: ", reqWithUser);
             next();
         })
     }

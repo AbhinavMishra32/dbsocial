@@ -17,8 +17,8 @@ export const Sidebar = ({ children }) => {
             setUsername(user.username);
             setEmail(user.email);
         } else {
-            setUsername("No user logged in");
-            setEmail("No email");
+            setUsername("Login");
+            setEmail("");
         }
     }, [user])
 

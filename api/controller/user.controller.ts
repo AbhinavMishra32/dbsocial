@@ -105,3 +105,19 @@ export const authRequire = (req: Request, res: Response, next: Function) =>{
         next(errorHandler(401, "Token is invalid"));
     }
 }
+
+export const getUser = async (req: Request, res: Response, next: Function) => {
+    try {
+        console.log("Request in getUser: ", req);
+        const { username } = req.params;
+        console.log("Username: ", username);
+        const user = await prisma.user.findUnique({where: {name: username}})
+        if (!user){
+            res.status(404).json({message: "User not found."});
+        }
+        res.status(200).json({message: "User fetched successfully.", user});
+    }
+    catch (error) {
+        next(errorHandler(500, "An error occurred while fetching the user. Please try again later."));
+    }
+}

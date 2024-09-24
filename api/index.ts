@@ -1,6 +1,7 @@
 import express, {Request, Response} from 'express';
 import userRouter from './routes/user.js';
 import postRouter from './routes/posts.js';
+import publicUserRouter from './routes/publicUser.js';
 import { CustomError } from './utils/error.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -22,6 +23,12 @@ app.listen(PORT, () => {
 
 app.use('/api/user', userRouter);
 app.use('/api/posts', postRouter);
+app.use('/user', publicUserRouter);
+
+// app.get('/test', (req: Request, res: Response) => {
+//     console.log("Request in test: ", req);
+//     res.json({message: "Test route"});
+// })
 
 app.use((err: CustomError, req: Request, res: Response, next: Function) => {
     const statusCode = err.statusCode || 500;

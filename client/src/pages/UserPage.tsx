@@ -14,10 +14,6 @@ const UserPage = () => {
   }, [user, linkUsername]);
 
   useEffect(() => {
-    // console.log("User: ", localUser);
-    // if (user?.username === username) return;
-    // console.log("Username: ", linkUsername);
-    // console.log("Local User: ", localUser);
     const fetchUser = async () => {
       try {
         const response = await api.get(`/user/${linkUsername}`);
@@ -32,16 +28,26 @@ const UserPage = () => {
     fetchUser();
   }, [linkUsername, localUser]);
 
+  useEffect(() => {
+    const fetchPosts = () => {
+      const response = await api.get('/api/posts', {
+        headers : {
+          Authorization: `Bearer ${user?.token}`
+        }
+      })
+    }
+  })
+
   return (
     <div>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
         <>
-          <h1>Profile Page</h1>
+          {/* <h1>Profile Page</h1>
           <h2>Username: {linkUsername}</h2>
           <h2>Fetched username: {fetchedUser.name}</h2>
-          <h2>Profile is that of user which is logged in : {localUser ? "True" : "No"}</h2>
+          <h2>Profile is that of user which is logged in : {localUser ? "True" : "No"}</h2> */}
           <ProfileCard username={fetchedUser.name} email={fetchedUser.email} />
         </>
       )}

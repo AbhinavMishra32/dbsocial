@@ -3,7 +3,11 @@ import prisma from '../prisma.js';
 import { errorHandler } from '../utils/error.js';
 
 interface RequestWithAddedUser extends Request {
+    // this is the authorized user
     addedUser: {userId: number, username: string, email: string};
+
+    //this is the user whose profile is being viewed
+    username: string;
 }
 
 export const makePost = async (req: Request, res: Response, next: NextFunction) => {
@@ -30,6 +34,10 @@ export const getPost = async (req: Request, res: Response, next: NextFunction) =
     try {
         const reqWithAddedUser = req as RequestWithAddedUser;
         const posts = await prisma.post.findMany({where: {authorId: reqWithAddedUser.addedUser.userId}});
+
+        const {username} = reqWithAddedUser;
+
+        const openPosts = await prisma.post.findMany({where: {author: {username}}}); 
 
         res.status(200).json({posts});
     } catch (error) {

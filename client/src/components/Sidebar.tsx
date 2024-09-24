@@ -1,6 +1,7 @@
 import { ChevronFirst, ChevronLast, MoreVertical } from 'lucide-react'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useUser } from '../context/UserContext';
+import { Link } from 'react-router-dom';
 
 const SidebarContext = createContext();
 
@@ -56,7 +57,7 @@ export const Sidebar = ({ children }) => {
     )
 }
 
-export const SidebarItem = ({ icon, text, active, alert }) => {
+export const SidebarItem = ({ icon, text, link, active, alert }) => {
     const { expanded } = useContext(SidebarContext);
     return (
         <li className={`
@@ -66,10 +67,12 @@ export const SidebarItem = ({ icon, text, active, alert }) => {
         ${active ? 'bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800' : 'hover:bg-indigo-50 text-gray-600'
             }
         `}>
-            {icon}
-            <span className={` overflow-hidden transition-all
+            <Link to={link} className='flex items-center' >
+                {icon}
+                <span className={` overflow-hidden transition-all
             ${expanded ? 'w-52 ml-3' : 'w-0'}`}>{text}</span>
-            {alert && <div className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${expanded ? "" : "top-2"}`} />}
+                {alert && <div className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${expanded ? "" : "top-2"}`} />}
+            </Link>
 
             {!expanded && <div className={
                 `absolute left-full top-1/2 transform -translate-y-1/2

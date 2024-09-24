@@ -6,6 +6,7 @@ import { UserProvider } from './context/UserContext';
 import Dashboard from './pages/Dashboard';
 import Layout from './components/Layout';
 import Sidebar from './components/Sidebar';
+import ProfilePage from './pages/ProfilePage';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/" element={<Home />} />
+            <Route path="/profile/:username" element={<ProfilePage />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />

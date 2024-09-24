@@ -108,9 +108,7 @@ export const authRequire = (req: Request, res: Response, next: Function) =>{
 
 export const getUser = async (req: Request, res: Response, next: Function) => {
     try {
-        console.log("Request in getUser: ", req);
         const { username } = req.params;
-        console.log("Username: ", username);
         const user = await prisma.user.findUnique({where: {name: username}})
         if (!user){
             res.status(404).json({message: "User not found."});

@@ -9,15 +9,15 @@ interface ProfileCardProps {
 const ProfileCard: React.FC<ProfileCardProps> = ({ username, email }) => {
   // fetch image from user object later and for that implement it in schema
   return (
-    <div className='pt-10'>
-      <Card>
+    <div className='pt-20 pb-10'>
+      <Card className='rounded-3xl'>
         <CardHeader className="relative">
-          <div className="w-full h-6 overflow-hidden">
-            <img
+            <div className="w-full h-20 rounded-xl overflow-hidden">
+              <img
               src="https://picsum.photos/seed/picsum/200/300"
-              className="w-full h-full object-cover absolute top-0 left-0 overflow-auto"
-            />
-          </div>
+              className="w-full h-full object-cover absolute top-0 left-0 overflow-hidden"
+              />
+            </div>
           <div className="relative z-10 p-4">
             <h1 className="text-xl font-bold">{username}</h1>
             <p className="text-md">{email}</p>

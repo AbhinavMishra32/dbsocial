@@ -59,7 +59,7 @@ const Dashboard = () => {
               Authorization: `Bearer ${user?.token}`,
             },
           });
-          console.log("Posts: ", response.data.posts);
+          // console.log("Posts: ", response.data.posts);
           setPosts(response.data.posts);
         } catch (error) {
           if (error.response?.status === 403) {
@@ -73,7 +73,7 @@ const Dashboard = () => {
       };
       fetchPosts();
     }
-  }, [user, navigate]);
+  }, [user, setUser]);
 
   // const refreshToken = document.cookie.split('; ').find(row => row.startsWith('refreshToken='));
   // const refreshTokenValue = refreshToken ? refreshToken.split('=')[1] : null;
@@ -94,7 +94,7 @@ const Dashboard = () => {
           <p>{error}</p>
         </div>
       )}
-      <PostsView posts={posts} isLoading={loading} />
+       <PostsView posts={posts} isLoading={loading} />
     </>
   )
 }

@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from 'express';
 import prisma from '../prisma.js';
 import { errorHandler } from '../utils/error.js';
+import { open } from 'fs';
 
 interface RequestWithAddedUser extends Request {
     // this is the authorized user
@@ -33,13 +34,18 @@ export const makePost = async (req: Request, res: Response, next: NextFunction) 
 export const getPost = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const reqWithAddedUser = req as RequestWithAddedUser;
-        const posts = await prisma.post.findMany({where: {authorId: reqWithAddedUser.addedUser.userId}});
+        // const posts = await prisma.post.findMany({where: {authorId: reqWithAddedUser.addedUser.userId}});
 
         const {username} = reqWithAddedUser;
 
         const openPosts = await prisma.post.findMany({where: {author: {username}}}); 
+        console.log("Open posts: ", openPosts);
 
-        res.status(200).json({posts});
+        if (!openPosts) {
+            return res.status(404).json({message: "No posts found for this user."});
+        }
+
+        res.status(200).json({posts: openPosts});
     } catch (error) {
         next(errorHandler(500, "An error occurred while fetching the posts. Please try again later."));
     }

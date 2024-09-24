@@ -13,20 +13,20 @@ type PostsViewProps = {
 
 const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
     return (
-        <>
+        <div className="flex flex-col space-y-5">
             {isLoading ? (
-                <div className="flex flex-col space-y-3">
-                    <Skeleton className="h-[125px] w-[250px] rounded-xl" />
-                </div>
+                Array.from({ length: 3 }).map((_, index) => (
+                    <Skeleton key={index} className="h-[125px] w-[250px] rounded-xl" />
+                ))
             ) : (
                 posts.map((post, index) => (
-                    <Card key={index} className="flex flex-col space-y-3">
-                        <CardTitle>{post.title}</CardTitle>
+                    <Card key={index} className="flex flex-col space-y-3 rounded-xl">
+                        <CardTitle className="p-4">{post.title}</CardTitle>
                         <CardContent>{post.content}</CardContent>
                     </Card>
                 ))
             )}
-        </>
+        </div>
     );
 };
 

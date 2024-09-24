@@ -8,7 +8,7 @@ const SidebarContext = createContext();
 
 export const Sidebar = ({ children }) => {
     const { user } = useUser();
-    const [expanded, setExpanded] = useState(true);
+    const [expanded, setExpanded] = useState(false);
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
 
@@ -24,7 +24,7 @@ export const Sidebar = ({ children }) => {
 
     return (
         <>
-            <aside className='flex h-screen'>
+            <aside className='flex h-full fixed top-0 left-0 z-50'>
                 <nav className='h-full flex flex-col bg-white border-r shadow-lg'>
                     <div className='p-4 pb-2 flex justify-between items-center'>
                         <img src='https://img.logoipsum.com/243.svg'

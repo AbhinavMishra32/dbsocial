@@ -11,6 +11,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (!user) {
       console.log("User not logged in. Redirecting to login page.");
+      console.log("User: ", user);
       navigate("/login");
     }
   }, [user, navigate]);
@@ -74,9 +75,9 @@ const Dashboard = () => {
     }
   }, [user, navigate]);
 
-  const refreshToken = document.cookie.split('; ').find(row => row.startsWith('refreshToken='));
-  const refreshTokenValue = refreshToken ? refreshToken.split('=')[1] : null;
-  console.log("Refresh token: ", refreshTokenValue);
+  // const refreshToken = document.cookie.split('; ').find(row => row.startsWith('refreshToken='));
+  // const refreshTokenValue = refreshToken ? refreshToken.split('=')[1] : null;
+  // console.log("Refresh token: ", refreshTokenValue);
   return (
     <>
       <div>

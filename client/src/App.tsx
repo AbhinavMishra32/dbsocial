@@ -11,8 +11,6 @@ const App = () => {
   return (
     <UserProvider>
       <BrowserRouter>
-        {/* <Layout> */}
-        {/* <Sidebar> */}
         <Routes>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
@@ -21,8 +19,6 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
         </Routes>
-        {/* </Sidebar> */}
-        {/* </Layout> */}
       </BrowserRouter>
     </UserProvider>
   );

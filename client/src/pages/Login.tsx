@@ -1,10 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import {z} from 'zod';
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "../components/ui/card";
+import { z } from 'zod';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from '../components/ui/label';
-import {Button} from "../components/ui/button";
+import { Button } from "../components/ui/button";
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import axios, { AxiosError } from 'axios';
@@ -15,8 +15,8 @@ import { api } from '../services/axios';
 
 
 const schema = z.object({
-    username: z.string().min(4, {message: "Username must contain at least 4 characters"}).max(25, {message: "Username should be under 25 characters"}), // this is for sign up 
-    password: z.string().min(8, { message: "Password must contain at least 8 characters" }),
+  username: z.string().min(4, { message: "Username must contain at least 4 characters" }).max(25, { message: "Username should be under 25 characters" }), // this is for sign up 
+  password: z.string().min(8, { message: "Password must contain at least 8 characters" }),
 });
 
 type FormFields = z.infer<typeof schema>;
@@ -45,7 +45,7 @@ const SignUp = () => {
       const response = await api.post("/api/user/login", {
         name: data.username,
         password: data.password,
-      },{
+      }, {
         withCredentials: true,
       });
       console.log(response.data);
@@ -58,12 +58,6 @@ const SignUp = () => {
         username: response.data.name,
         email: response.data.email,
       });
-      // console.log("User set:", {
-      //   id: response.data.id,
-      //   token,
-      //   username: response.data.name,
-      //   email: response.data.email,
-      // });
       setError(null);
       navigate("/dashboard");
     } catch (error) {

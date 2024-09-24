@@ -11,16 +11,18 @@ const App = () => {
   return (
     <UserProvider>
       <BrowserRouter>
-        <Layout>
-          {/* <Sidebar> */}
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
+        {/* <Layout> */}
+        {/* <Sidebar> */}
+        <Routes>
+          <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
-          </Routes>
-          {/* </Sidebar> */}
-        </Layout>
+            <Route path="/" element={<Home />} />
+          </Route>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+        </Routes>
+        {/* </Sidebar> */}
+        {/* </Layout> */}
       </BrowserRouter>
     </UserProvider>
   );

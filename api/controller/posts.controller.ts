@@ -39,7 +39,6 @@ export const getPost = async (req: Request, res: Response, next: NextFunction) =
         const { username } = reqWithAddedUser;
 
         const openPosts = await prisma.post.findMany({ where: { author: { username } } });
-        console.log("Open posts: ", openPosts);
 
         if (!openPosts) {
             return res.status(404).json({ message: "No posts found for this user." });
@@ -48,5 +47,23 @@ export const getPost = async (req: Request, res: Response, next: NextFunction) =
         res.status(200).json({ posts: openPosts.reverse() });
     } catch (error) {
         next(errorHandler(500, "An error occurred while fetching the posts. Please try again later."));
+    }
+}
+
+export const changeLikes = async (req: RequestWithAddedUser, res: Response, next: NextFunction) => {
+    try {
+        // console.log(req.addedUser);
+        const postId = parseInt(req.params.postId);
+        const post = await prisma.post.findUnique({ where: { id: postId }, include: { likedBy: true } })
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found." });
+        }
+
+        res.sendStatus(200).json({ message: "WOrking change likes api" })
+        // res.sendStatus(200).json({ postByUser: post });
+    } catch (error) {
+        console.log(error);
+        next(errorHandler(500, "An error occured while updating post likes."));
     }
 }

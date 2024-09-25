@@ -53,11 +53,40 @@ export const changeLikes = async (req: RequestWithAddedUser, res: Response, next
     try {
         // console.log(req.addedUser);
         const postId = parseInt(req.params.postId);
-        // const post = await prisma.post.findUnique({ where: { id: postId }, include: { likedBy: true } })
+        const post = await prisma.post.findUnique({ where: { id: postId }, include: { likedBy: true } })
 
-        // if (!post) {
-        //     return res.status(404).json({ message: "Post not found." });
-        // }
+        if (!post) {
+            return res.status(404).json({ message: "Post not found." });
+        }
+
+        const alreadyLiked = post.likedBy.some((user) => user.id === req.addedUser.userId);
+
+        if(alreadyLiked) {
+            await prisma.post.update({
+                where: {id:postId},
+                data: {
+                    likes: {decrement: 1},
+                    likedBy: {
+                        disconnect: {id: req.addedUser.userId}
+                    }
+                }
+            });
+            return res.status(200).json({updatedPost: post, isLiked: !alreadyLiked});
+        } else {
+            await prisma.post.update({
+                where: {id: postId},
+                data: {
+                    likes: {increment: 1},
+                    likedBy: {
+                        connect: {id: req.addedUser.userId}
+                    }
+                },
+            })
+            return res.status(200).json({updatedPost: post, isLiked: !alreadyLiked});
+        }
+
+        // show liked post by the addedUser in req:
+        console.log(post.likedBy);
 
         res.status(200).json({ message: "Post liked successfully." });
         // res.status(200).json({ postByUser: post });
@@ -66,4 +95,18 @@ export const changeLikes = async (req: RequestWithAddedUser, res: Response, next
         next(errorHandler(500, "An error occured while updating post likes."));
         return
     }
+}
+
+export const checkIsLiked = async (req: RequestWithAddedUser, res: Response, next: NextFunction) => {
+    const postId = parseInt(req.params.postId);
+
+    const post = await prisma.post.findUnique({where: {id:postId}, include: {likedBy: true}} )
+
+    if (!post) {
+        return res.status(404).json({ message: "Post not found." });
+    }
+
+    const alreadyLiked = post.likedBy.some((user) => user.id === req.addedUser.userId);
+
+    return res.status(200).json({isLiked: alreadyLiked});
 }

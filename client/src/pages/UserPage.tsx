@@ -4,9 +4,10 @@ import { useParams } from 'react-router-dom';
 import { api } from '../services/axios';
 import ProfileCard from '../components/ProfileCard';
 import PostsView from '../components/PostsView';
+import { useNavigate } from 'react-router-dom';
 
 const UserPage = () => {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const { username: linkUsername } = useParams();
   const [posts, setPosts] = useState([]);
   const [fetchedUser, setFetchedUser] = useState<any>(null);
@@ -15,6 +16,8 @@ const UserPage = () => {
   const localUser = useMemo(() => {
     return user && user.username === linkUsername;
   }, [user, linkUsername]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -48,6 +51,10 @@ const UserPage = () => {
         setPosts(response.data.posts);
         console.log("Posts: ", posts);
       } catch (error) {
+        if (error.response.status === 403) {
+          setUser(null);
+          navigate("/login");
+        }
         console.log("Error occured while fetching posts: ", error);
       } finally {
         setIsLoadingPosts(false);

@@ -16,7 +16,7 @@ const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
         <div className="flex flex-col space-y-5">
             {isLoading ? (
                 Array.from({ length: 3 }).map((_, index) => (
-                    <Skeleton key={index} className="h-[125px] w-[250px] rounded-xl" />
+                    <Skeleton key={index} className="h-[125px] w-full rounded-xl" />
                 ))
             ) : (
                 posts.map((post, index) => (

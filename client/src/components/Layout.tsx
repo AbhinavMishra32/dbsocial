@@ -20,17 +20,17 @@ const Layout = ({ children }) => {
     return (
         <div className='flex h-screen'>
             <Sidebar>
-            <SidebarItem icon={<Home size={20} />} text='Home' link='/' active={isActive('/dashboard')} />
-            <SidebarItem icon={<User size={20} />} text='Profile' link={`/user/${username}`} alert active={isActive(`/user/${username}`)} />
-            <SidebarItem icon={<PlusCircle size={20} />} text='Create Post'  />
-            <hr className='my-3' />
-            <SidebarItem icon={<Settings size={20} />} text='Settings' active={isActive('/settings')} />
+                <SidebarItem icon={<Home size={20} />} text='Home' link='/' active={isActive('/dashboard')} />
+                <SidebarItem icon={<User size={20} />} text='Profile' link={`/user/${username}`} alert active={isActive(`/user/${username}`)} />
+                <SidebarItem icon={<PlusCircle size={20} />} text='Create Post' />
+                <hr className='my-3' />
+                <SidebarItem icon={<Settings size={20} />} text='Settings' active={isActive('/settings')} />
             </Sidebar>
-            <div className='flex flex-col flex-grow items-center'>
+            <div className='flex flex-col flex-grow items-center pt-16'>
                 <Navbar />
-            <div className='w-full max-w-3xl'>
-                <Outlet />
-            </div>
+                <div className='w-full max-w-3xl'>
+                    <Outlet />
+                </div>
             </div>
         </div>
     );

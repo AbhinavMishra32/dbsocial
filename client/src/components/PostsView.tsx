@@ -4,6 +4,7 @@ import { Skeleton } from "./ui/skeleton";
 import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
 import { api } from "../services/axios";
+import { User } from "../types";
 
 type Post = {
     title: string;
@@ -17,22 +18,30 @@ type PostsViewProps = {
     isLoading: boolean;
 };
 
-const FetchLikes: React.FC<{ post: Post, isLiked: boolean }> = ({ post, isLiked }) => {
+const FetchLikes: React.FC<{ post: Post, isLiked: boolean, user: User }> = ({ post, isLiked, user }) => {
     const [count, setCount] = useState(post.likes);
-    const { user } = useUser();
     const [isLoading, setIsLoading] = useState(true);
+
 
     useEffect(() => {
         // console.log("User token: ", user?.token);
         // if (!user?.token) {
         try {
-            console.log("USER TOKEN: ", user?.token);
             const decLikes = async () => {
-                const response = await api.post(`/api/posts/like/${post.id}`, {
-                    headers: {
+                // const response = await api.post(`/api/posts/like/${post.id}`, {}, {
+                //     headers: {
+                //         Authorization: `Bearer ${user?.token}`,
+                //     },
+                // });
+                const response = await api.post(
+                    "/api/posts/like/" + post.id,
+                    {},
+                    {
+                      headers: {
                         Authorization: `Bearer ${user?.token}`,
-                    },
-                });
+                      },
+                    }
+                  );
                 console.log(response.data.postByUser);
                 // setCount(response.data.likes);
                 setIsLoading(false);
@@ -43,7 +52,7 @@ const FetchLikes: React.FC<{ post: Post, isLiked: boolean }> = ({ post, isLiked 
             console.log("Error in likes useEffect: ", error);
             // }
         }
-    }, []);
+    }, [user?.token, post.id]);
 
     return (
         <div>
@@ -61,6 +70,7 @@ const FetchLikes: React.FC<{ post: Post, isLiked: boolean }> = ({ post, isLiked 
 };
 const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
     const [isLiked, setIsLiked] = useState(false);
+    const {user, setUser} = useUser();
 
     const handleLikeClick = () => {
         setIsLiked(!isLiked);
@@ -78,7 +88,7 @@ const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
                         <CardTitle className="p-4">{post.title}</CardTitle>
                         <CardContent>{post.content}</CardContent>
                         <CardFooter onClick={handleLikeClick}>
-                            <FetchLikes post={post} isLiked={isLiked} />
+                            <FetchLikes post={post} isLiked={isLiked}  user={user}/>
                         </CardFooter>
                     </Card>
                 ))

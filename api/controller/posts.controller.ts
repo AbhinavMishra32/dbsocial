@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../prisma.js';
 import { errorHandler } from '../utils/error.js';
-import { open } from 'fs';
 
 interface RequestWithAddedUser extends Request {
     // this is the authorized user
@@ -54,15 +53,17 @@ export const changeLikes = async (req: RequestWithAddedUser, res: Response, next
     try {
         // console.log(req.addedUser);
         const postId = parseInt(req.params.postId);
-        const post = await prisma.post.findUnique({ where: { id: postId }, include: { likedBy: true } })
+        // const post = await prisma.post.findUnique({ where: { id: postId }, include: { likedBy: true } })
 
-        if (!post) {
-            return res.status(404).json({ message: "Post not found." });
-        }
+        // if (!post) {
+        //     return res.status(404).json({ message: "Post not found." });
+        // }
 
-        res.status(200).json({ postByUser: post });
+        res.status(200).json({ message: "Post liked successfully." });
+        // res.status(200).json({ postByUser: post });
     } catch (error) {
         console.log(error);
         next(errorHandler(500, "An error occured while updating post likes."));
+        return
     }
 }

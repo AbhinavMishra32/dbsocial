@@ -39,7 +39,7 @@ const UserPage = () => {
     if (!fetchedUser) return;
     const fetchPosts = async () => {
       try {
-        const response = await api.post("/api/posts", {
+        const response = await api.get("/api/posts",{
           headers: {
             Authorization: `Bearer ${user?.token}`,
           },

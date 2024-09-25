@@ -90,9 +90,10 @@ export const authRequire = (req: Request, res: Response, next: Function) => {
     // we are doing .split(' ')[1] because the authHeader is in the format "Bearer <token>"
     const token = authHeader && authHeader.split(' ')[1];
 
+    // console.log("Accessed Protected route with token: ", token);
+    // console.log("Request headers: ", req.headers);
     if (!token) return res.sendStatus(401);
 
-    console.log("Accessed Protected route with token: ", token);
 
     try {
         jwt.verify(token, JWT_SECRET, (err, user: JwtPayload) => {

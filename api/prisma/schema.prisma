@@ -6,21 +6,23 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-  
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String @unique @db.VarChar(100)
-  email String @unique @db.VarChar(255)
+  id       Int    @id @default(autoincrement())
+  name     String @unique @db.VarChar(100)
+  email    String @unique @db.VarChar(255)
   password String @db.VarChar(255)
-  posts Post[]
+  posts    Post[]
+  likes    Post[] @relation("PostLikes")
 }
 
 model Post {
   id       Int    @id @default(autoincrement())
   title    String @db.VarChar(255)
   content  String
+  likes    Int    @default(0)
+  likedBy  User[] @relation("PostLikes")
   authorId Int
   author   User   @relation(fields: [authorId], references: [id])
 }

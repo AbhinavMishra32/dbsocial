@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import userRouter from './routes/user.js';
 import postRouter from './routes/posts.js';
 import publicUserRouter from './routes/publicUser.js';
@@ -25,12 +25,8 @@ app.use('/api/user', userRouter);
 app.use('/api/posts', postRouter);
 app.use('/user', publicUserRouter);
 
-// app.get('/test', (req: Request, res: Response) => {
-//     console.log("Request in test: ", req);
-//     res.json({message: "Test route"});
-// })
 
-app.use((err: CustomError, req: Request, res: Response, next: Function) => {
+app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
     const statusCode = err.statusCode || 500;
     const message = err.message || 'Internal Server Error';
     res.status(statusCode).json({

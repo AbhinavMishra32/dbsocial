@@ -23,29 +23,16 @@ const FetchLikes: React.FC<{ post: Post, isLiked: boolean }> = ({ post, isLiked 
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (!user) return;
+        // console.log("User token: ", user?.token);
+        // if (!user?.token) {
         try {
-            // const incLikes = async () => {
-            //     setIsLoading(true);
-            //     const response = await api.post('/api/post/like', {
-            //         headers: {
-            //             Authorization: `Bearer ${user?.token}`
-            //         },
-            //         params: {
-            //             postId: post.id,
-            //             action: "inc"
-            //         },
-            //     })
-            //     setCount(response.data.likes);
-            //     setIsLoading(false);
-            //     console.log("Response from send likes: ", response);
-            // }
+            console.log("USER TOKEN: ", user?.token);
             const decLikes = async () => {
                 const response = await api.post(`/api/posts/like/${post.id}`, {
                     headers: {
-                        Authorization: `Bearer ${user?.token}`
-                    }
-                })
+                        Authorization: `Bearer ${user?.token}`,
+                    },
+                });
                 console.log(response.data.postByUser);
                 // setCount(response.data.likes);
                 setIsLoading(false);
@@ -54,6 +41,7 @@ const FetchLikes: React.FC<{ post: Post, isLiked: boolean }> = ({ post, isLiked 
             decLikes();
         } catch (error) {
             console.log("Error in likes useEffect: ", error);
+            // }
         }
     }, []);
 

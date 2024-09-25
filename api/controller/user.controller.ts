@@ -33,23 +33,23 @@ export const regUser = async (req: Request, res: Response, next: Function) => {
             }
         });
 
-    res.status(201).json({message: "User created successfully."});
+        res.status(201).json({ message: "User created successfully." });
     } catch (error) {
         next(errorHandler(500, "An error occurred while creating the user. Please try again later."));
     }
 };
 
-export const loginUser = async(req: Request, res: Response, next: Function) => {
+export const loginUser = async (req: Request, res: Response, next: Function) => {
     try {
         const { name, password } = req.body;
-        const user = await prisma.user.findUnique({where: {name}});
-        if (!user) return res.status(401).json({message: "Invalid credentials"});
+        const user = await prisma.user.findUnique({ where: { name } });
+        if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
         const isPasswordValid = await bcryptjs.compare(password, user.password);
-        if(!isPasswordValid) return res.status(401).json({message: "Invalid credentials"});
+        if (!isPasswordValid) return res.status(401).json({ message: "Invalid credentials" });
 
-        const accessToken = jwt.sign({userId: user.id}, JWT_SECRET, {expiresIn: '15m'});
-        const refreshToken = jwt.sign({userId: user.id}, REFRESH_TOKEN_SECRET, {expiresIn: '7d'});
+        const accessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '15m' });
+        const refreshToken = jwt.sign({ userId: user.id }, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
@@ -69,15 +69,15 @@ export const loginUser = async(req: Request, res: Response, next: Function) => {
     }
 }
 
-export const refreshToken = (req: Request, res: Response, next: Function)=> {
+export const refreshToken = (req: Request, res: Response, next: Function) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) return res.sendStatus(401);
 
-    jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err: any, user: JwtPayload) =>{
+    jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err: any, user: JwtPayload) => {
         if (err) return res.sendStatus(403);
 
-        const newAccessToken = jwt.sign({userId: user.id}, JWT_SECRET, {expiresIn: '15m'});
-        res.json({accessToken: newAccessToken});
+        const newAccessToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '15m' });
+        res.json({ accessToken: newAccessToken });
     });
 };
 
@@ -85,12 +85,14 @@ interface ReqWithUser extends Request {
     addedUser: JwtPayload
 }
 
-export const authRequire = (req: Request, res: Response, next: Function) =>{
+export const authRequire = (req: Request, res: Response, next: Function) => {
     const authHeader = req.headers['authorization'];
     // we are doing .split(' ')[1] because the authHeader is in the format "Bearer <token>"
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) return res.sendStatus(401);
+
+    console.log("Accessed Protected route with token: ", token);
 
     try {
         jwt.verify(token, JWT_SECRET, (err, user: JwtPayload) => {
@@ -109,11 +111,11 @@ export const authRequire = (req: Request, res: Response, next: Function) =>{
 export const getUser = async (req: Request, res: Response, next: Function) => {
     try {
         const { username } = req.params;
-        const user = await prisma.user.findUnique({where: {name: username}})
-        if (!user){
-            res.status(404).json({message: "User not found."});
+        const user = await prisma.user.findUnique({ where: { name: username } })
+        if (!user) {
+            res.status(404).json({ message: "User not found." });
         }
-        res.status(200).json({message: "User fetched successfully.", user});
+        res.status(200).json({ message: "User fetched successfully.", user });
     }
     catch (error) {
         next(errorHandler(500, "An error occurred while fetching the user. Please try again later."));

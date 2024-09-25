@@ -94,7 +94,7 @@ const Dashboard = () => {
           <p>{error}</p>
         </div>
       )}
-      <PostsView posts={posts} isLoading={loading} />
+       <PostsView posts={posts} isLoading={loading} />
     </>
   )
 }

@@ -60,8 +60,7 @@ export const changeLikes = async (req: RequestWithAddedUser, res: Response, next
             return res.status(404).json({ message: "Post not found." });
         }
 
-        res.sendStatus(200).json({ message: "WOrking change likes api" })
-        // res.sendStatus(200).json({ postByUser: post });
+        res.status(200).json({ postByUser: post });
     } catch (error) {
         console.log(error);
         next(errorHandler(500, "An error occured while updating post likes."));

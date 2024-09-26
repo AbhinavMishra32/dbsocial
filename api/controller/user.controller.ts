@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { errorHandler } from '../utils/error.js';
 import bcryptjs from 'bcryptjs';
@@ -85,7 +85,7 @@ interface ReqWithUser extends Request {
     addedUser: JwtPayload
 }
 
-export const authRequire = (req: Request, res: Response, next: Function) => {
+export const authRequire = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
     // we are doing .split(' ')[1] because the authHeader is in the format "Bearer <token>"
     const token = authHeader && authHeader.split(' ')[1];

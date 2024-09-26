@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { makePost, getPost, changeLikes, checkIsLiked } from "../controller/posts.controller.js";
+import { makePost, getPost, changeLikes, checkIsLiked, getCommentsOfPost } from "../controller/posts.controller.js";
 import { authRequire } from "../controller/user.controller.js";
 
 const router = Router();
@@ -9,5 +9,6 @@ router.post("/", authRequire, makePost)
 
 router.post("/like/:postId", authRequire, changeLikes);
 router.get("/like/isliked/:postId", authRequire, checkIsLiked);
+router.get("/:postId/comments", authRequire, getCommentsOfPost);
 
 export default router;

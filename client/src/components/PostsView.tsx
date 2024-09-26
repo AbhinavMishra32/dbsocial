@@ -9,7 +9,7 @@ import CommentSection from "./CommentSection";
 import { Separator } from "./ui/separator";
 
 
-type Post = {
+export type Post = {
   title: string;
   content: string;
   likes: number;
@@ -112,7 +112,7 @@ const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
             <CardFooter className="flex flex-col items-start gap-2">
               <FetchLikes post={post} user={user} />
               <Separator />
-              <CommentSection />
+              <CommentSection postId={post.id} postTitle={post.title}/>
             </CardFooter>
           </Card>
         ))}

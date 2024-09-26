@@ -100,6 +100,7 @@ export const changeLikes = async (req: RequestWithAddedUser, res: Response, next
 }
 
 export const checkIsLiked = async (req: RequestWithAddedUser, res: Response, next: NextFunction) => {
+    try{
     const postId = parseInt(req.params.postId);
 
     const post = await prisma.post.findUnique({ where: { id: postId }, include: { likedBy: true } })
@@ -110,5 +111,25 @@ export const checkIsLiked = async (req: RequestWithAddedUser, res: Response, nex
 
     const alreadyLiked = post.likedBy.some((user) => user.id === req.addedUser.userId);
 
-    return res.status(200).json({ isLiked: alreadyLiked });
+        return res.status(200).json({ isLiked: alreadyLiked });
+    } catch (error) {
+        console.log("Error occured while checking for likes: ", error);
+        next(errorHandler(500, "An error occured while checking for likes."));
+        return
+    }
+}
+
+export const getCommentsOfPost = async (req:RequestWithAddedUser, res: Response, next: NextFunction) => {
+    try {
+        const postId = parseInt(req.params.postId);
+        const comments = prisma.post.findMany({where: {id: postId}, include: {comments: true}});
+
+        if (!comments) {
+            return res.status(404).json({ message: "Comments not found for this post" });
+        }
+        return res.status(200).json({comments});
+    } catch (error) {
+        next(errorHandler(500, "An error occured while fetching comments for post."));
+        return
+    }
 }

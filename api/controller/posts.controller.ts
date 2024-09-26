@@ -37,14 +37,16 @@ export const getPost = async (req: Request, res: Response, next: NextFunction) =
 
         const { username } = reqWithAddedUser;
 
-        const openPosts = await prisma.post.findMany({ where: { author: { username } } });
+        const openPosts = await prisma.post.findMany({ where: { author: { username: username } }, orderBy: { createdAt: 'desc' } });
+        // console.log(openPosts);
 
         if (!openPosts) {
             return res.status(404).json({ message: "No posts found for this user." });
         }
 
-        res.status(200).json({ posts: openPosts.reverse() });
+        res.status(200).json({ posts: openPosts });
     } catch (error) {
+        console.log("Error while getting posts: ", error);
         next(errorHandler(500, "An error occurred while fetching the posts. Please try again later."));
     }
 }
@@ -61,28 +63,28 @@ export const changeLikes = async (req: RequestWithAddedUser, res: Response, next
 
         const alreadyLiked = post.likedBy.some((user) => user.id === req.addedUser.userId);
 
-        if(alreadyLiked) {
+        if (alreadyLiked) {
             await prisma.post.update({
-                where: {id:postId},
+                where: { id: postId },
                 data: {
-                    likes: {decrement: 1},
+                    likes: { decrement: 1 },
                     likedBy: {
-                        disconnect: {id: req.addedUser.userId}
+                        disconnect: { id: req.addedUser.userId }
                     }
                 }
             });
-            return res.status(200).json({updatedPost: post, isLiked: !alreadyLiked});
+            return res.status(200).json({ updatedPost: post, isLiked: !alreadyLiked });
         } else {
             await prisma.post.update({
-                where: {id: postId},
+                where: { id: postId },
                 data: {
-                    likes: {increment: 1},
+                    likes: { increment: 1 },
                     likedBy: {
-                        connect: {id: req.addedUser.userId}
+                        connect: { id: req.addedUser.userId }
                     }
                 },
             })
-            return res.status(200).json({updatedPost: post, isLiked: !alreadyLiked});
+            return res.status(200).json({ updatedPost: post, isLiked: !alreadyLiked });
         }
 
         // show liked post by the addedUser in req:
@@ -100,7 +102,7 @@ export const changeLikes = async (req: RequestWithAddedUser, res: Response, next
 export const checkIsLiked = async (req: RequestWithAddedUser, res: Response, next: NextFunction) => {
     const postId = parseInt(req.params.postId);
 
-    const post = await prisma.post.findUnique({where: {id:postId}, include: {likedBy: true}} )
+    const post = await prisma.post.findUnique({ where: { id: postId }, include: { likedBy: true } })
 
     if (!post) {
         return res.status(404).json({ message: "Post not found." });
@@ -108,5 +110,5 @@ export const checkIsLiked = async (req: RequestWithAddedUser, res: Response, nex
 
     const alreadyLiked = post.likedBy.some((user) => user.id === req.addedUser.userId);
 
-    return res.status(200).json({isLiked: alreadyLiked});
+    return res.status(200).json({ isLiked: alreadyLiked });
 }

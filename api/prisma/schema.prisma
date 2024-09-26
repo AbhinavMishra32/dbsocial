@@ -18,11 +18,13 @@ model User {
 }
 
 model Post {
-  id       Int    @id @default(autoincrement())
-  title    String @db.VarChar(255)
-  content  String
-  likes    Int    @default(0)
-  likedBy  User[] @relation("PostLikes")
-  authorId Int
-  author   User   @relation(fields: [authorId], references: [id])
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  modifiedAi DateTime @updatedAt
+  title      String   @db.VarChar(255)
+  content    String
+  authorId   Int
+  likes      Int      @default(0)
+  author     User     @relation(fields: [authorId], references: [id])
+  likedBy    User[]   @relation("PostLikes")
 }

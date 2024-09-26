@@ -5,19 +5,20 @@ import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
 import { api } from "../services/axios";
 import { User } from "../types";
-import { set } from "react-hook-form";
+import CommentSection from "./CommentSection";
+import { Separator } from "./ui/separator";
 
 
 type Post = {
-    title: string;
-    content: string;
-    likes: number;
-    id: number;
+  title: string;
+  content: string;
+  likes: number;
+  id: number;
 };
 
 type PostsViewProps = {
-    posts: Post[];
-    isLoading: boolean;
+  posts: Post[];
+  isLoading: boolean;
 };
 
 const FetchLikes: React.FC<{ post: Post; user: User }> = ({
@@ -27,28 +28,34 @@ const FetchLikes: React.FC<{ post: Post; user: User }> = ({
   const [count, setCount] = useState(post.likes);
   const [isLoading, setIsLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
+  const [isLoadingLike, setIsLoadingLike] = useState(false);
   // make liked state inside fetchlikes, and the button also put inside that component, make it handle everything
 
   useEffect(() => {
     const fetchIsLiked = async () => {
-        try {
-            const response = await api.get("/api/posts/like/isliked/" + post.id, {
-                headers: {
-                    Authorization: `Bearer ${user?.token}`,
-                },
-            });
-            console.log("isLiked response: ", response);
-            setIsLiked(response.data.isLiked);
-            setIsLoading(false);
-        } catch (error) {
-            console.log("Error in fetching isliked useEffect: ", error);
-        } 
+      try {
+        const response = await api.get("/api/posts/like/isliked/" + post.id, {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
+        // console.log("isLiked response: ", response);
+        setIsLiked(response.data.isLiked);
+        setIsLoading(false);
+      } catch (error) {
+        console.log("Error in fetching isliked useEffect: ", error);
+      }
     };
     fetchIsLiked();
   }, [post.id, user?.token]);
 
   const HandlelikeClick = async () => {
+    if (isLoadingLike) return;
+
+    setIsLoadingLike(true);
     try {
+      setCount(isLiked ? count - 1 : count + 1);
+      setIsLiked(!isLiked);
       const response = await api.post(
         "/api/posts/like/" + post.id,
         {},
@@ -58,11 +65,14 @@ const FetchLikes: React.FC<{ post: Post; user: User }> = ({
           },
         }
       );
-      setIsLiked(response.data.isLiked);
-      setCount(response.data.updatedPost.likes);
+      console.log("like response: ", response);
+      // setIsLiked(response.data.isLiked);
+      // setCount(response.data.updatedPost.likes);
       setIsLoading(false);
     } catch (error) {
       console.log("Error in likes useEffect: ", error);
+    } finally {
+      setIsLoadingLike(false);
     }
   };
 
@@ -74,9 +84,9 @@ const FetchLikes: React.FC<{ post: Post; user: User }> = ({
         <div className="flex items-center space-x-2">
           <button onClick={HandlelikeClick}>
             <div
-              className={`flex justify-center items-center size-10 hover:bg-gray-200 hover:rounded-full`}
+              className={`flex justify-center items-center size-10 hover:bg-gray-200 hover:rounded-full active:size-11 transition-all ease-in-out`}
             >
-              <Heart className="w-5 h-5" fill={isLiked ? "red" : "white"}/>
+              <Heart className="w-5 h-5" fill={isLiked ? "red" : "white"} />
             </div>
           </button>
           <span>{count}</span>
@@ -93,17 +103,19 @@ const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
     <div className="flex flex-col space-y-5">
       {isLoading
         ? Array.from({ length: 3 }).map((_, index) => (
-            <Skeleton key={index} className="h-[125px] w-full rounded-xl" />
-          ))
+          <Skeleton key={index} className="h-[125px] w-full rounded-xl" />
+        ))
         : posts.map((post, index) => (
-            <Card key={index} className="flex flex-col space-y-3 rounded-xl">
-              <CardTitle className="p-4">{post.title}</CardTitle>
-              <CardContent>{post.content}</CardContent>
-              <CardFooter>
-                <FetchLikes post={post} user={user} />
-              </CardFooter>
-            </Card>
-          ))}
+          <Card key={index} className="flex flex-col space-y-3 rounded-xl">
+            <CardTitle className="p-4">{post.title}</CardTitle>
+            <CardContent>{post.content}</CardContent>
+            <CardFooter className="flex flex-col items-start gap-2">
+              <FetchLikes post={post} user={user} />
+              <Separator />
+              <CommentSection />
+            </CardFooter>
+          </Card>
+        ))}
     </div>
   );
 };

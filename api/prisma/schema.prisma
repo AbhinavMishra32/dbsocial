@@ -9,22 +9,35 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  name     String @unique @db.VarChar(100)
-  email    String @unique @db.VarChar(255)
-  password String @db.VarChar(255)
+  id       Int       @id @default(autoincrement())
+  name     String    @unique @db.VarChar(100)
+  email    String    @unique @db.VarChar(255)
+  password String    @db.VarChar(255)
   posts    Post[]
-  likes    Post[] @relation("PostLikes")
+  likes    Post[]    @relation("PostLikes")
+  comments Comment[]
 }
 
 model Post {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  modifiedAi DateTime @updatedAt
-  title      String   @db.VarChar(255)
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  modifiedAt DateTime  @updatedAt
+  title      String    @db.VarChar(255)
   content    String
   authorId   Int
-  likes      Int      @default(0)
+  likes      Int       @default(0)
+  author     User      @relation(fields: [authorId], references: [id])
+  likedBy    User[]    @relation("PostLikes")
+  comments   Comment[]
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  modifiedAt DateTime @updatedAt
+  content    String   @db.VarChar(1000)
+  authorId   Int
   author     User     @relation(fields: [authorId], references: [id])
-  likedBy    User[]   @relation("PostLikes")
+  postId     Int
+  post       Post     @relation(fields: [postId], references: [id])
 }

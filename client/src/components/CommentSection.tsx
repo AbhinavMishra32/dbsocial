@@ -4,7 +4,10 @@ import { api } from '../services/axios';
 import { useUser } from '../context/UserContext';
 import { Post } from './PostsView';
 import { Button } from './ui/button';
-import { User } from '../types';
+import { ScrollArea } from './ui/scroll-area';
+import { Avatar } from './ui/avatar';
+import { AvatarImage } from '@radix-ui/react-avatar';
+import moment from 'moment';
 
 type Comment = {
   id: number;
@@ -59,6 +62,7 @@ const CommentSection: React.FC<{ postId: number, postTitle: string }> = ({ postI
     } catch (error) {
       console.log("Error while submitting comment: ", error);
     } finally {
+      setCommentInput("");
       setIsLoadingCommentSubmit(false);
     }
   }
@@ -75,18 +79,29 @@ const CommentSection: React.FC<{ postId: number, postTitle: string }> = ({ postI
             <Input placeholder="Write a comment" className="flex-grow" onChange={(e) => { setCommentInput(e.target.value) }} value={commentInput} />
             <Button className="ml-2" variant={'outline'} onClick={handleCommentSubmit}>Comment</Button>
           </div>
-          <div className="">
-            {Array.isArray(comments) ? (
-              comments.map((comment) => (
-                <div key={comment.id} className="">
-                  <h3>{comment.author.name}</h3>
-                  <p>{comment.content}</p>
-                </div>
-              ))
-            ) : (
-              <p>No comments available.</p>
-            )}
-          </div>
+          <ScrollArea className='h-[150px]'>
+            <div className="py-3">
+              {Array.isArray(comments) ? (
+                comments.map((comment) => (
+                  <div key={comment.id} className="flex space-x-4 mb-4">
+                    <Avatar>
+                      {/* implement author object in comments with avatarUrl */}
+                      <AvatarImage src={`https://ui-avatars.com/api/?name=${encodeURIComponent(comment.author.name)}&background=random`} />
+                    </Avatar>
+                    <div className='flex-1'>
+                      <div className='flex items-center mb-1'>
+                        <h3 className='font-semibold mr-2'>{comment.author.name}</h3>
+                        <h3 className='text-sm text-muted-foreground'>{moment(comment.createdAt).fromNow()}</h3>
+                      </div>
+                      <p className='text-sm'>{comment.content}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p>No comments available.</p>
+              )}
+            </div>
+          </ScrollArea>
         </div>
       )}
     </>

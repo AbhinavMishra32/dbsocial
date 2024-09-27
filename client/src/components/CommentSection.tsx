@@ -3,18 +3,22 @@ import { Input } from './ui/input'
 import { api } from '../services/axios';
 import { useUser } from '../context/UserContext';
 import { Post } from './PostsView';
+import { Button } from './ui/button';
+import { User } from '../types';
 
 type Comment = {
-    id: number;
-    content: string;
-    author: string;
-    post: Post;
+  id: number;
+  content: string;
+  author: string;
+  post: Post;
 }
 
-const CommentSection: React.FC<{postId: number, postTitle: string}> = ({postId, postTitle}) => {
+const CommentSection: React.FC<{ postId: number, postTitle: string }> = ({ postId, postTitle }) => {
   const { user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [comments, setComments] = useState([]);
+  const [commentInput, setCommentInput] = useState("");
+  const [isLoadingCommentSubmit, setIsLoadingCommentSubmit] = useState(false);
 
   useEffect(() => {
     if (isLoading) return;
@@ -38,20 +42,44 @@ const CommentSection: React.FC<{postId: number, postTitle: string}> = ({postId, 
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [isLoadingCommentSubmit]);
+
+  const handleCommentSubmit = async () => {
+    if (isLoadingCommentSubmit) return;
+    try {
+      setIsLoadingCommentSubmit(true);
+      const response = await api.post(`/api/posts/${postId}/comments`, {
+        content: commentInput,
+      }, {
+        headers: {
+          Authorization: `Bearer ${user?.token}`
+        },
+      });
+      console.log(`Response from submitted comment ${commentInput}: `, response.data);
+    } catch (error) {
+      console.log("Error while submitting comment: ", error);
+    } finally {
+      setIsLoadingCommentSubmit(false);
+    }
+  }
+
+
   return (
     <>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
         <div className="w-full pt-4">
-          <h1 className="pb-3">Comments</h1>
-          <Input placeholder="Write a comment" className="" />
+          <h1 className="pb-3 font-bold">Comments ({comments.length})</h1>
+          <div className="flex items-center">
+            <Input placeholder="Write a comment" className="flex-grow" onChange={(e) => { setCommentInput(e.target.value) }} value={commentInput} />
+            <Button className="ml-2" variant={'outline'} onClick={handleCommentSubmit}>Comment</Button>
+          </div>
           <div className="">
             {Array.isArray(comments) ? (
-              comments.map((comment: Comment) => (
+              comments.map((comment) => (
                 <div key={comment.id} className="">
-                  <h3>{comment.author}</h3>
+                  <h3>{comment.author.name}</h3>
                   <p>{comment.content}</p>
                 </div>
               ))
@@ -64,5 +92,4 @@ const CommentSection: React.FC<{postId: number, postTitle: string}> = ({postId, 
     </>
   );
 }
-
 export default CommentSection

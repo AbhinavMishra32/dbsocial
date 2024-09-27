@@ -1,5 +1,5 @@
 import { Heart } from "lucide-react";
-import { Card, CardContent, CardFooter, CardTitle } from "./ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Skeleton } from "./ui/skeleton";
 import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
@@ -7,6 +7,7 @@ import { api } from "../services/axios";
 import { User } from "../types";
 import CommentSection from "./CommentSection";
 import { Separator } from "./ui/separator";
+import { Link } from "react-router-dom";
 
 
 export type Post = {
@@ -96,7 +97,6 @@ const FetchLikes: React.FC<{ post: Post; user: User }> = ({
   );
 };
 const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
-  // const [isLiked, setIsLiked] = useState(false);
   const { user } = useUser();
 
   return (
@@ -107,16 +107,21 @@ const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
         ))
         : posts.map((post, index) => (
           <Card key={index} className="flex flex-col space-y-3 rounded-xl">
-            <CardTitle className="p-4">{post.title}</CardTitle>
-            <CardContent>{post.content}</CardContent>
+            <div className="hover:bg-gray-100 transition-colors border-b-2">
+              <Link to={`/post/${post.id}`}>
+                <CardTitle className="p-4">{post.title}</CardTitle>
+                <CardContent className="">{post.content}</CardContent>
+              </Link>
+            </div>
             <CardFooter className="flex flex-col items-start gap-2">
               <FetchLikes post={post} user={user} />
               <Separator />
-              <CommentSection postId={post.id} postTitle={post.title}/>
+              <CommentSection postId={post.id} postTitle={post.title} />
             </CardFooter>
           </Card>
-        ))}
-    </div>
+        ))
+      }
+    </div >
   );
 };
 

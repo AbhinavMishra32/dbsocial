@@ -139,7 +139,6 @@ export const setCommentsOfPost = async (req: RequestWithAddedUser, res: Response
     try {
         const postId = parseInt(req.params.postId);
         const { content } = req.body;
-        console.log("Content: ", content);
         const authorId = req.addedUser.userId;
         const newComment = await prisma.comment.create({
             data: {

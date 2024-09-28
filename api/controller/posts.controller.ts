@@ -100,16 +100,16 @@ export const changeLikes = async (req: RequestWithAddedUser, res: Response, next
 }
 
 export const checkIsLiked = async (req: RequestWithAddedUser, res: Response, next: NextFunction) => {
-    try{
-    const postId = parseInt(req.params.postId);
+    try {
+        const postId = parseInt(req.params.postId);
 
-    const post = await prisma.post.findUnique({ where: { id: postId }, include: { likedBy: true } })
+        const post = await prisma.post.findUnique({ where: { id: postId }, include: { likedBy: true } })
 
-    if (!post) {
-        return res.status(404).json({ message: "Post not found." });
-    }
+        if (!post) {
+            return res.status(404).json({ message: "Post not found." });
+        }
 
-    const alreadyLiked = post.likedBy.some((user) => user.id === req.addedUser.userId);
+        const alreadyLiked = post.likedBy.some((user) => user.id === req.addedUser.userId);
 
         return res.status(200).json({ isLiked: alreadyLiked });
     } catch (error) {
@@ -119,17 +119,46 @@ export const checkIsLiked = async (req: RequestWithAddedUser, res: Response, nex
     }
 }
 
-export const getCommentsOfPost = async (req:RequestWithAddedUser, res: Response, next: NextFunction) => {
+export const getCommentsOfPost = async (req: RequestWithAddedUser, res: Response, next: NextFunction) => {
     try {
         const postId = parseInt(req.params.postId);
-        const comments = prisma.post.findMany({where: {id: postId}, include: {comments: true}});
+        const comments = await prisma.comment.findMany({ where: { postId: postId }, include: { author: true } });
 
         if (!comments) {
             return res.status(404).json({ message: "Comments not found for this post" });
         }
-        return res.status(200).json({comments});
+
+        return res.status(200).json({ comments });
     } catch (error) {
         next(errorHandler(500, "An error occured while fetching comments for post."));
         return
+    }
+}
+
+export const setCommentsOfPost = async (req: RequestWithAddedUser, res: Response, next: NextFunction) => {
+    try {
+        const postId = parseInt(req.params.postId);
+        const { content } = req.body;
+        const authorId = req.addedUser.userId;
+        const newComment = await prisma.comment.create({
+            data: {
+                content,
+                author: {
+                    connect: { id: authorId },
+                },
+                post: {
+                    connect: { id: postId }
+                }
+            }
+        });
+
+        if (!newComment) {
+            return res.status(404).json({ message: "There was an error while posting the comment." });
+        }
+
+        return res.status(201).json({ message: "Comment posted successfully.", newComment });
+    } catch (error) {
+        console.log("Error while posting comments: ", error);
+        next(errorHandler(500, "An error occured while posting comments for this post."));
     }
 }

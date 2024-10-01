@@ -100,7 +100,7 @@ export const authRequire = (req: Request, res: Response, next: NextFunction) => 
             if (err) return res.sendStatus(403);
             let reqWithUser = req as ReqWithUser;
             reqWithUser.addedUser = user as JwtPayload;
-            console.log("addedUser in authRequire: ", reqWithUser.addedUser);
+            // console.log("addedUser in authRequire: ", reqWithUser.addedUser);
             next();
         })
     }

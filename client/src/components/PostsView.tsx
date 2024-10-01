@@ -44,6 +44,7 @@ const FetchLikes: React.FC<{ post: Post; user: User }> = ({
         setIsLiked(response.data.isLiked);
         setIsLoading(false);
       } catch (error) {
+        console.log("Post id: ", post.id);
         console.log("Error in fetching isliked useEffect: ", error);
       }
     };
@@ -100,6 +101,15 @@ const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
   const { user } = useUser();
 
   if (posts.length === 0) {
+    if (isLoading) {
+      return (
+        <div className="flex flex-col space-y-5">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <Skeleton key={index} className="h-[225px] w-full rounded-xl" />
+          ))}
+        </div>
+      );
+    }
     return <p className="text-xl">No posts found.</p>;
   }
   return (

@@ -30,13 +30,13 @@ export const makePost = async (req: Request, res: Response, next: NextFunction) 
     }
 }
 
-export const getPost = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllPosts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const reqWithAddedUser = req as RequestWithAddedUser;
         // const posts = await prisma.post.findMany({where: {authorId: reqWithAddedUser.addedUser.userId}});
 
         const { username } = reqWithAddedUser.addedUser;
-        console.log("Username of makePost: ", username);
+        // console.log("Username of makeAllPosts: ", username);
 
         const openPosts = await prisma.post.findMany({
             where: {
@@ -56,6 +56,24 @@ export const getPost = async (req: Request, res: Response, next: NextFunction) =
     } catch (error) {
         console.log("Error while getting posts: ", error);
         next(errorHandler(500, "An error occurred while fetching the posts. Please try again later."));
+    }
+}
+
+export const getPostById = async (req: RequestWithAddedUser, res: Response, next: NextFunction) => {
+    try {
+        const postId = parseInt(req.params.postId, 10);
+        console.log("postId in getPostById: ", postId);
+        const post = await prisma.post.findUnique({where: {id: postId}, include: {likedBy: true}})
+
+        if (!post) {
+            return res.status(404).json({message: "Post not found."});
+        }
+
+        return res.status(200).json({post});
+    } catch (error) {
+        console.log("Error in getPostById: ", error);
+        next(errorHandler(500, "An error occured while fetching this post."));
+        return
     }
 }
 
@@ -94,12 +112,6 @@ export const changeLikes = async (req: RequestWithAddedUser, res: Response, next
             })
             return res.status(200).json({ updatedPost: post, isLiked: !alreadyLiked });
         }
-
-        // show liked post by the addedUser in req:
-        console.log(post.likedBy);
-
-        res.status(200).json({ message: "Post liked successfully." });
-        // res.status(200).json({ postByUser: post });
     } catch (error) {
         console.log(error);
         next(errorHandler(500, "An error occured while updating post likes."));

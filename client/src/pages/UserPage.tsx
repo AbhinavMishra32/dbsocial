@@ -39,7 +39,7 @@ const UserPage = () => {
     if (!fetchedUser) return;
     const fetchPosts = async () => {
       try {
-        const response = await api.get("/api/posts",{
+        const response = await api.get("/api/posts", {
           headers: {
             Authorization: `Bearer ${user?.token}`,
           },
@@ -49,41 +49,41 @@ const UserPage = () => {
         });
         console.log("posts recieved: ", response.data.posts);
         setPosts(response.data.posts);
-        console.log("Posts: ", posts);
-      } catch (error) {
-        if (error.response.status === 403) {
-          setUser(null);
-          navigate("/login");
-        }
-        console.log("Error occured while fetching posts: ", error);
-      } finally {
-        setIsLoadingPosts(false);
+      console.log("Posts: ", posts);
+    } catch (error) {
+      if (error.response.status === 403) {
+        setUser(null);
+        navigate("/login");
       }
-    };
-    fetchPosts();
-  }, [fetchedUser, user]);
+      console.log("Error occured while fetching posts: ", error);
+    } finally {
+      setIsLoadingPosts(false);
+    }
+  };
+  fetchPosts();
+}, [fetchedUser, user]);
 
-  return (
-    <div>
-      {isLoadingUser ? (
-        <p>Loading user information...</p>
-      ) : (
-        <>
-          {fetchedUser ? (
-            <>
-              <ProfileCard
-                username={fetchedUser.name}
-                email={fetchedUser.email}
-              />
-              <PostsView posts={posts} isLoading={isLoadingPosts} />
-            </>
-          ) : (
-            <p>User not found</p>
-          )}
-        </>
-      )}
-    </div>
-  );
+return (
+  <div>
+    {isLoadingUser ? (
+      <p>Loading user information...</p>
+    ) : (
+      <>
+        {fetchedUser ? (
+          <>
+            <ProfileCard
+              username={fetchedUser.name}
+              email={fetchedUser.email}
+            />
+            <PostsView posts={posts} isLoading={isLoadingPosts} />
+          </>
+        ) : (
+          <p>User not found</p>
+        )}
+      </>
+    )}
+  </div>
+);
 }
 
 export default UserPage

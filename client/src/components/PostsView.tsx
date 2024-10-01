@@ -99,6 +99,9 @@ const FetchLikes: React.FC<{ post: Post; user: User }> = ({
 const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
   const { user } = useUser();
 
+  if (posts.length === 0) {
+    return <p>No posts found.</p>;
+  }
   return (
     <div className="flex flex-col space-y-5">
       {isLoading

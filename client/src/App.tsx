@@ -6,6 +6,7 @@ import { UserProvider } from './context/UserContext';
 import Dashboard from './pages/Dashboard';
 import Layout from './components/Layout';
 import UserPage from './pages/UserPage';
+import PostPage from './pages/PostPage';
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/" element={<Home />} />
             <Route path="/user/:username" element={<UserPage />} />
+            <Route path="/post/:postId" element={<PostPage />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />

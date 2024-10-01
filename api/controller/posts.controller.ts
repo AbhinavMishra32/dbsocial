@@ -35,9 +35,17 @@ export const getPost = async (req: Request, res: Response, next: NextFunction) =
         const reqWithAddedUser = req as RequestWithAddedUser;
         // const posts = await prisma.post.findMany({where: {authorId: reqWithAddedUser.addedUser.userId}});
 
-        const { username } = reqWithAddedUser;
+        const { username } = reqWithAddedUser.addedUser;
+        console.log("Username of makePost: ", username);
 
-        const openPosts = await prisma.post.findMany({ where: { author: { username: username } }, orderBy: { createdAt: 'desc' } });
+        const openPosts = await prisma.post.findMany({
+            where: {
+                author: {
+                    is: { id: reqWithAddedUser.addedUser.userId }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
         // console.log(openPosts);
 
         if (!openPosts) {

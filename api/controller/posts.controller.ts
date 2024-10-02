@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../prisma.js';
 import { errorHandler } from '../utils/error.js';
+import { ranker } from './ranker.js';
 
 interface RequestWithAddedUser extends Request {
     // this is the authorized user
@@ -55,19 +56,22 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
         }
 
         const openPosts = await prisma.post.findMany({
-            where: {
-                authorId: reqWithAddedUser.addedUser.userId
-            },
-            orderBy: { createdAt: 'desc' },
-            include: { author: true }
+            include: { author: true, comments: true }
         });
-        // console.log(openPosts);
 
         if (!openPosts) {
             return res.status(404).json({ message: "No posts found for this user." });
         }
 
-        res.status(200).json({ posts: openPosts });
+        const rankedPosts = openPosts.map(post => ({
+            ...post,
+            score: ranker(post.likes, post.comments.length, post.createdAt)
+        }));
+
+        rankedPosts.sort((a,b) => b.score - a.score);
+        // console.log(rankedPosts);
+
+        res.status(200).json({ posts: rankedPosts });
     } catch (error) {
         console.log("Error while getting posts: ", error);
         next(errorHandler(500, "An error occurred while fetching the posts. Please try again later."));

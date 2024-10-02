@@ -35,17 +35,31 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
         const reqWithAddedUser = req as RequestWithAddedUser;
         // const posts = await prisma.post.findMany({where: {authorId: reqWithAddedUser.addedUser.userId}});
 
-        const { username } = reqWithAddedUser.addedUser;
-        // console.log("Username of makeAllPosts: ", username);
+        const { username } = reqWithAddedUser.query;
+        if (username) {
+            const openPosts = await prisma.post.findMany({
+                where: {
+                    author: {
+                        name: username
+                    }
+                },
+                orderBy: { createdAt: 'desc' },
+                include: { author: true }
+            });
+
+            if (!openPosts) {
+                return res.status(404).json({ message: "No posts found for this user." });
+            }
+
+            return res.status(200).json({ posts: openPosts });
+        }
 
         const openPosts = await prisma.post.findMany({
             where: {
-                author: {
-                    is: { id: reqWithAddedUser.addedUser.userId }
-                }
+                authorId: reqWithAddedUser.addedUser.userId
             },
             orderBy: { createdAt: 'desc' },
-            include: {author: true}
+            include: { author: true }
         });
         // console.log(openPosts);
 
@@ -64,13 +78,13 @@ export const getPostById = async (req: RequestWithAddedUser, res: Response, next
     try {
         const postId = parseInt(req.params.postId, 10);
         // console.log("postId in getPostById: ", postId);
-        const post = await prisma.post.findUnique({where: {id: postId}, include: {likedBy: true, author: true}})
+        const post = await prisma.post.findUnique({ where: { id: postId }, include: { likedBy: true, author: true } })
 
         if (!post) {
-            return res.status(404).json({message: "Post not found."});
+            return res.status(404).json({ message: "Post not found." });
         }
 
-        return res.status(200).json({post});
+        return res.status(200).json({ post });
     } catch (error) {
         console.log("Error in getPostById: ", error);
         next(errorHandler(500, "An error occured while fetching this post."));

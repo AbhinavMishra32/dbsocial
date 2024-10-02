@@ -40,50 +40,51 @@ const UserPage = () => {
     const fetchPosts = async () => {
       try {
         const response = await api.get("/api/posts", {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-          },
           params: {
             username: fetchedUser.name,
           },
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
         });
+        console.log("Username sending: ", fetchedUser.name)
         console.log("posts recieved: ", response.data.posts);
         setPosts(response.data.posts);
-      console.log("Posts: ", posts);
-    } catch (error) {
-      if (error.response.status === 403) {
-        setUser(null);
-        navigate("/login");
+        console.log("Posts: ", posts);
+      } catch (error) {
+        if (error.response.status === 403) {
+          setUser(null);
+          navigate("/login");
+        }
+        console.log("Error occured while fetching posts: ", error);
+      } finally {
+        setIsLoadingPosts(false);
       }
-      console.log("Error occured while fetching posts: ", error);
-    } finally {
-      setIsLoadingPosts(false);
-    }
-  };
-  fetchPosts();
-}, [fetchedUser, user]);
+    };
+    fetchPosts();
+  }, [fetchedUser, user]);
 
-return (
-  <div>
-    {isLoadingUser ? (
-      <p>Loading user information...</p>
-    ) : (
-      <>
-        {fetchedUser ? (
-          <>
-            <ProfileCard
-              username={fetchedUser.name}
-              email={fetchedUser.email}
-            />
-            <PostsView posts={posts} isLoading={isLoadingPosts} />
-          </>
-        ) : (
-          <p>User not found</p>
-        )}
-      </>
-    )}
-  </div>
-);
+  return (
+    <div>
+      {isLoadingUser ? (
+        <p>Loading user information...</p>
+      ) : (
+        <>
+          {fetchedUser ? (
+            <>
+              <ProfileCard
+                username={fetchedUser.name}
+                email={fetchedUser.email}
+              />
+              <PostsView posts={posts} isLoading={isLoadingPosts} />
+            </>
+          ) : (
+            <p>User not found</p>
+          )}
+        </>
+      )}
+    </div>
+  );
 }
 
 export default UserPage

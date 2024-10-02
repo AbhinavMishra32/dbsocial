@@ -8,6 +8,7 @@ import { ScrollArea } from './ui/scroll-area';
 import { Avatar } from './ui/avatar';
 import { AvatarImage } from '@radix-ui/react-avatar';
 import moment from 'moment';
+import { useLocation } from 'react-router-dom';
 
 type Comment = {
   id: number;
@@ -22,6 +23,9 @@ const CommentSection: React.FC<{ postId: number, postTitle: string }> = ({ postI
   const [comments, setComments] = useState([]);
   const [commentInput, setCommentInput] = useState("");
   const [isLoadingCommentSubmit, setIsLoadingCommentSubmit] = useState(false);
+  const location = useLocation();
+  const isOnPostPage = location.pathname.includes("/post/");
+  const scrollAreaHeight = isOnPostPage ? `${comments.length}px` : '150px';
 
   useEffect(() => {
     if (isLoading) return;
@@ -79,7 +83,7 @@ const CommentSection: React.FC<{ postId: number, postTitle: string }> = ({ postI
             <Input placeholder="Write a comment" className="flex-grow" onChange={(e) => { setCommentInput(e.target.value) }} value={commentInput} />
             <Button className="ml-2" variant={'outline'} onClick={handleCommentSubmit}>Comment</Button>
           </div>
-          <ScrollArea className='h-[150px]'>
+          <ScrollArea className={`h-[${scrollAreaHeight}]`}>
             <div className="py-3">
               {Array.isArray(comments) ? (
                 comments.map((comment) => (

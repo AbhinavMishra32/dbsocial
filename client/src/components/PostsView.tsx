@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { Heart, UserSquare } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Skeleton } from "./ui/skeleton";
 import { useEffect, useState } from "react";
@@ -7,7 +7,11 @@ import { api } from "../services/axios";
 import { User } from "../types";
 import CommentSection from "./CommentSection";
 import { Separator } from "./ui/separator";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { Avatar, AvatarImage } from "./ui/avatar";
+import { set } from "react-hook-form";
+import { HoverCard } from "@radix-ui/react-hover-card";
+import { HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 
 
 export type Post = {
@@ -15,6 +19,7 @@ export type Post = {
   content: string;
   likes: number;
   id: number;
+  author: User;
 };
 
 type PostsViewProps = {
@@ -99,6 +104,8 @@ const FetchLikes: React.FC<{ post: Post; user: User }> = ({
 };
 const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
   const { user } = useUser();
+  const location = useLocation();
+  const isOnPostPage = location.pathname.includes("/post/");
 
   if (posts.length === 0) {
     if (isLoading) {
@@ -116,25 +123,75 @@ const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
     <div className="flex flex-col space-y-5">
       {isLoading
         ? Array.from({ length: 3 }).map((_, index) => (
-          <Skeleton key={index} className="h-[125px] w-full rounded-xl" />
-        ))
+            <Skeleton key={index} className="h-[125px] w-full rounded-xl" />
+          ))
         : posts.map((post, index) => (
-          <Card key={index} className="flex flex-col space-y-3 rounded-xl">
-            <div className="hover:bg-gray-100 transition-colors border-b-2">
-              <Link to={`/post/${post.id}`}>
-                <CardTitle className="p-4">{post.title}</CardTitle>
-                <CardContent className="">{post.content}</CardContent>
-              </Link>
-            </div>
-            <CardFooter className="flex flex-col items-start gap-2">
-              <FetchLikes post={post} user={user} />
-              <Separator />
-              <CommentSection postId={post.id} postTitle={post.title} />
-            </CardFooter>
-          </Card>
-        ))
-      }
-    </div >
+            <Card key={index} className="flex flex-col space-y-3 rounded-xl">
+              <div className="border-b-2">
+                {isOnPostPage ? (
+                  <>
+                    <CardTitle className="p-4 flex flex-col gap-4">
+                      <Link to={`/user/${post.author.name}`}>
+                      <HoverCard>
+                        <HoverCardTrigger>
+                          <div className="flex gap-1 w-auto">
+                            <UserSquare className="w-5 h-5" />
+                            <p className="flex justify-center items-center text-base">
+                              {post.author.name}
+                            </p>
+                          </div>
+                        </HoverCardTrigger>
+                        <HoverCardContent align="start" side="bottom">
+                        <div className="flex gap-1 w-auto">
+                          <Avatar className="size-6">
+                            <AvatarImage
+                              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                post.author.name
+                              )}&background=random`}
+                            />
+                          </Avatar>
+                          <p className="flex justify-center items-center text-base">
+                            {post.author.name}
+                          </p>
+                        </div>
+                        </HoverCardContent>
+                        </HoverCard>
+                      </Link>
+                      {post.title}
+                    </CardTitle>
+                    <CardContent className="">{post.content}</CardContent>
+                  </>
+                ) : (
+                  <Link to={`/post/${post.id}`}>
+                    <div className="hover:bg-gray-100 transition-colors">
+                      <CardTitle className="p-4 flex flex-col gap-4">
+                        <div className="flex gap-1">
+                          <Avatar className="size-6">
+                            <AvatarImage
+                              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                post.author.name
+                              )}&background=random`}
+                            />
+                          </Avatar>
+                          <p className="flex justify-center items-center text-base">
+                            {post.author.name}
+                          </p>
+                        </div>
+                        {post.title}
+                      </CardTitle>
+                      <CardContent className="">{post.content}</CardContent>
+                    </div>
+                  </Link>
+                )}
+              </div>
+              <CardFooter className="flex flex-col items-start gap-2">
+                <FetchLikes post={post} user={user} />
+                <Separator />
+                <CommentSection postId={post.id} postTitle={post.title} />
+              </CardFooter>
+            </Card>
+          ))}
+    </div>
   );
 };
 

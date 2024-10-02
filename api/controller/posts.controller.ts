@@ -44,7 +44,8 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
                     is: { id: reqWithAddedUser.addedUser.userId }
                 }
             },
-            orderBy: { createdAt: 'desc' }
+            orderBy: { createdAt: 'desc' },
+            include: {author: true}
         });
         // console.log(openPosts);
 
@@ -62,8 +63,8 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
 export const getPostById = async (req: RequestWithAddedUser, res: Response, next: NextFunction) => {
     try {
         const postId = parseInt(req.params.postId, 10);
-        console.log("postId in getPostById: ", postId);
-        const post = await prisma.post.findUnique({where: {id: postId}, include: {likedBy: true}})
+        // console.log("postId in getPostById: ", postId);
+        const post = await prisma.post.findUnique({where: {id: postId}, include: {likedBy: true, author: true}})
 
         if (!post) {
             return res.status(404).json({message: "Post not found."});

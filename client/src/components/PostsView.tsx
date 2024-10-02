@@ -131,32 +131,46 @@ const PostsView: React.FC<PostsViewProps> = ({ posts, isLoading }) => {
                 {isOnPostPage ? (
                   <>
                     <CardTitle className="p-4 flex flex-col gap-4">
-                      <Link to={`/user/${post.author.name}`}>
                       <HoverCard>
                         <HoverCardTrigger>
-                          <div className="flex gap-1 w-auto">
-                            <UserSquare className="w-5 h-5" />
-                            <p className="flex justify-center items-center text-base">
-                              {post.author.name}
-                            </p>
+                          <div className="flex items-center gap-1 w-auto">
+                            <Link
+                              to={`/user/${post.author.name}`}
+                              className="flex items-center gap-1"
+                            >
+                              <Avatar className="size-6">
+                                <AvatarImage
+                                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                    post.author.name
+                                  )}&background=random`}
+                                />
+                              </Avatar>
+                              <p className="flex justify-center items-center text-base">
+                                {post.author.name}
+                              </p>
+                            </Link>
                           </div>
                         </HoverCardTrigger>
                         <HoverCardContent align="start" side="bottom">
-                        <div className="flex gap-1 w-auto">
-                          <Avatar className="size-6">
-                            <AvatarImage
-                              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                post.author.name
-                              )}&background=random`}
-                            />
-                          </Avatar>
-                          <p className="flex justify-center items-center text-base">
-                            {post.author.name}
-                          </p>
-                        </div>
+                          <div className="flex w-auto gap-3">
+                            <Avatar className="">
+                              <AvatarImage
+                                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                                  post.author.name
+                                )}&background=random`}
+                              />
+                            </Avatar>
+                            <div className="flex flex-col">
+                              <p className="flex justify-center items-center text-lg">
+                                {post.author.name}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                {post.author.email}
+                              </p>
+                            </div>
+                          </div>
                         </HoverCardContent>
-                        </HoverCard>
-                      </Link>
+                      </HoverCard>
                       {post.title}
                     </CardTitle>
                     <CardContent className="">{post.content}</CardContent>

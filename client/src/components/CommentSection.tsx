@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Input } from './ui/input'
 import { api } from '../services/axios';
 import { useUser } from '../context/UserContext';
-import { Post } from './PostsView';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
 import { Avatar } from './ui/avatar';
@@ -10,12 +9,6 @@ import { AvatarImage } from '@radix-ui/react-avatar';
 import moment from 'moment';
 import { useLocation } from 'react-router-dom';
 
-type Comment = {
-  id: number;
-  content: string;
-  author: string;
-  post: Post;
-}
 
 const CommentSection: React.FC<{ postId: number, postTitle: string }> = ({ postId, postTitle }) => {
   const { user } = useUser();
@@ -25,7 +18,7 @@ const CommentSection: React.FC<{ postId: number, postTitle: string }> = ({ postI
   const [isLoadingCommentSubmit, setIsLoadingCommentSubmit] = useState(false);
   const location = useLocation();
   const isOnPostPage = location.pathname.includes("/post/");
-  const scrollAreaHeight = isOnPostPage ? `${comments.length}px` : '150px';
+  const scrollAreaHeight = isOnPostPage ? `${comments.length * 70}px` : '150px';
 
   useEffect(() => {
     if (isLoading) return;
@@ -83,10 +76,10 @@ const CommentSection: React.FC<{ postId: number, postTitle: string }> = ({ postI
             <Input placeholder="Write a comment" className="flex-grow" onChange={(e) => { setCommentInput(e.target.value) }} value={commentInput} />
             <Button className="ml-2" variant={'outline'} onClick={handleCommentSubmit}>Comment</Button>
           </div>
-          <ScrollArea className={`h-[${scrollAreaHeight}]`}>
+          <ScrollArea style={{ height: scrollAreaHeight }}>
             <div className="py-3">
               {Array.isArray(comments) ? (
-                comments.map((comment) => (
+                comments.map((comment: any) => (
                   <div key={comment.id} className="flex space-x-4 mb-4">
                     <Avatar>
                       {/* implement author object in comments with avatarUrl */}

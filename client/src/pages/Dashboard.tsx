@@ -83,11 +83,9 @@ const Dashboard = () => {
   return (
     <>
       <div>
-        <h1 className="text-4xl">Dashboard</h1>
-        <p>Welcome {user?.username}</p>
-        <p>Email: {user?.email}</p>
+        <h1 className="text-4xl py-4">Home</h1>
       </div>
-      <div className='p-4 flex flex-col gap-2 border-4 rounded-xl my-3'>
+      <div className='p-4 flex flex-col gap-2 border-2 rounded-xl my-3'>
         <h3 className='pb-3 font-medium'>What's on your mind?</h3>
         <Input type="text" onChange={(e) => { setTitle(e.target.value) }} value={title} placeholder='Title' />
         <Textarea onChange={(e) => { setNewPost(e.target.value) }} value={newPost} placeholder='Enter Post'></Textarea>

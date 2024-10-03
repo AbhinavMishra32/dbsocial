@@ -15,7 +15,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ username, email }) => {
           <div className="w-full h-20 rounded-xl overflow-hidden z-1">
             <img
               src="https://picsum.photos/seed/picsum/200/300"
-              className="w-full h-full object-cover absolute top-0 left-0 overflow-hidden opacity-100 blur-2xl"
+              className="w-full h-full object-cover absolute top-0 left-0 overflow-hidden opacity-100 dark:opacity-30 blur-2xl"
             />
           </div>
           <div className="relative z-10 p-4">
@@ -25,7 +25,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ username, email }) => {
         </CardHeader>
         <CardContent>
           <p className="text-lg p-4 pb-2">About</p>
-          <p className="px-4 py-2 text-gray-600">
+          <p className="px-4 py-2 text-gray-600 dark:text-white">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus,
             blanditiis non. Cupiditate accusamus quae ipsam aut nostrum
             praesentium, a, at expedita autem commodi natus, sit vero quisquam

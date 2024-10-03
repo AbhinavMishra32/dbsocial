@@ -8,11 +8,11 @@ export const SidebarLayout = ({ children }) => {
     return (
         <>
             <aside className='flex h-full'>
-                <nav className='h-full flex flex-col bg-white borderer-r shadow-sm'>
+                <nav className='h-full flex flex-col bg-background border-r shadow-sm'>
                     <div className='p-4 pb-2 flex justify-between items-center'>
                         <img src='https://img.logoipsum.com/243.svg'
                             className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`} />
-                        <button onClick={() => setExpanded(curr => !curr)} className='p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100'>
+                        <button onClick={() => setExpanded(curr => !curr)} className='p-1.5 rounded-lg bg-/gray-50 hover:bg-gray-100 dark:hover:bg-neutral-800'>
                             {expanded ? <ChevronFirst /> : <ChevronLast />}
                         </button>
                     </div>
@@ -20,7 +20,7 @@ export const SidebarLayout = ({ children }) => {
                         <ul className='flex-1 px-3'>{children}</ul>
                     </SidebarContext.Provider>
                     <div className='border-t flex p-3'>
-                        <img src='https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true'
+                        <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(comment.author.name)}&background=random`}
                             alt=''
                             className='w-10 h-10 rounded-md' />
                         <div className={`

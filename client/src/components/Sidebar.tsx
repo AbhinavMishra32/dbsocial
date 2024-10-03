@@ -2,12 +2,14 @@ import { ChevronFirst, ChevronLast, MoreVertical } from 'lucide-react'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useUser } from '../context/UserContext';
 import { Link } from 'react-router-dom';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel } from './ui/dropdown-menu';
+import { DropdownMenuTrigger } from './ui/dropdown-menu';
 
 const SidebarContext = createContext();
 
 
 export const Sidebar = ({ children }) => {
-    const { user } = useUser();
+    const { user, setUser } = useUser();
     const [expanded, setExpanded] = useState(false);
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -22,14 +24,18 @@ export const Sidebar = ({ children }) => {
         }
     }, [user])
 
+    const signOut = () => {
+        setUser(null);
+    }
+
     return (
         <>
             <aside className='flex h-full fixed top-0 left-0 z-50'>
-                <nav className='h-full flex flex-col bg-white border-r shadow-lg'>
+                <nav className='h-full flex flex-col bg-background border-r shadow-lg'>
                     <div className='p-4 pb-2 flex justify-between items-center'>
                         <img src='https://img.logoipsum.com/243.svg'
                             className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`} />
-                        <button onClick={() => setExpanded(curr => !curr)} className='p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100'>
+                        <button onClick={() => setExpanded(curr => !curr)} className='p-1.5 rounded-lg bg-gray-50 dark:bg-neutral-900 hover:bg-gray-100 dark:hover:bg-neutral-800'>
                             {expanded ? <ChevronFirst /> : <ChevronLast />}
                         </button>
                     </div>
@@ -37,9 +43,9 @@ export const Sidebar = ({ children }) => {
                         <ul className='flex-1 px-3'>{children}</ul>
                     </SidebarContext.Provider>
                     <div className='border-t flex p-3'>
-                        <img src='https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true'
+                        <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=random`}
                             alt=''
-                            className='w-10 h-10 rounded-md mr-3' />
+                            className='w-10 h-10 rounded-full mr-3' />
                         <div className={`
                         flex justify-between items-center
                         overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}
@@ -48,7 +54,16 @@ export const Sidebar = ({ children }) => {
                                 <h4 className='font-semibold'>{username}</h4>
                                 <span className='text-sx text-gray-600'>{email}</span>
                             </div>
-                            <MoreVertical size={20} />
+                            <div className='flex items-center justify-center p-2 rounded-md hover:bg-neutral-300 dark:hover:bg-neutral-800'>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <MoreVertical size={20} />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuLabel onClick={signOut} className="cursor-pointer">Sign out</DropdownMenuLabel>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
                         </div>
                     </div>
                 </nav>
@@ -64,7 +79,7 @@ export const SidebarItem = ({ icon, text, link, active, alert }) => {
         relative flex items-center py-2 px-3 my-1
         font-medium rounded-md cursor-pointer
         transition-colors duration-200 group
-        ${active ? 'bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800' : 'hover:bg-indigo-50 text-gray-600'
+        ${active ? 'dark:bg-neutral-800' : 'hover:bg-indigo-50 dark:hover:bg-neutral-600 text-gray-600 dark:text-white'
             }
         `}>
             <Link to={link} className='flex items-center' >

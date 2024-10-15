@@ -75,8 +75,9 @@ const UserPage = () => {
               <ProfileCard
                 username={fetchedUser.name}
                 email={fetchedUser.email}
-                isLocalUser = {localUser}
+                isLocalUser={localUser}
               />
+              <h1 className='text-3xl font-thin mb-5'>Posts</h1>
               <PostsView posts={posts} isLoading={isLoadingPosts} />
             </>
           ) : (

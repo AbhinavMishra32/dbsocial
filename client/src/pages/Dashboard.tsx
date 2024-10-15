@@ -82,6 +82,7 @@ const Dashboard = () => {
   // console.log("Refresh token: ", refreshTokenValue);
   return (
     <>
+    <div className='md:mx-10 sm:ml-24 mr-5'>
       <div>
         <h1 className="text-4xl py-4">Home</h1>
       </div>
@@ -97,6 +98,7 @@ const Dashboard = () => {
         </div>
       )}
       <PostsView posts={posts} isLoading={loading} />
+      </div>
     </>
   )
 }

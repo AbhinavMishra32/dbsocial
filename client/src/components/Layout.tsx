@@ -26,6 +26,7 @@ const Layout = ({ children }) => {
                 <hr className='my-3' />
                 <SidebarItem icon={<Settings size={20} />} text='Settings' active={isActive('/settings')} />
             </Sidebar>
+            <div className='w-19 bg-red-300'></div>
             <div className='flex flex-col flex-grow items-center pt-16'>
                 <Navbar />
                 <div className='w-full max-w-3xl'>

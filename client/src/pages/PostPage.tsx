@@ -45,7 +45,9 @@ const PostPage = () => {
       {loadingPost ? (
         <p>Loading...</p>
       ) : (
-        <PostsView posts={post} isLoading={loadingPost} />
+        <div className='mt-10'>
+          <PostsView posts={post} isLoading={loadingPost} />
+        </div>
       )}
     </>
   );

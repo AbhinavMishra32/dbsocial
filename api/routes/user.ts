@@ -10,7 +10,7 @@ router.post("/login", loginUser);
 router.post('/refresh-token', refreshToken);
 
 router.post('/auth-required', authRequire, (req, res) => {
-    res.json({message: "You can access this route."});
+    res.json({ message: "Access allowed only for authenticated users" });
 });
 
 export default router;

@@ -31,7 +31,7 @@ export const Sidebar = ({ children }) => {
     return (
         <>
             <aside className='flex h-full fixed top-0 left-0 z-50'>
-                <nav className='h-full flex flex-col bg-background border-r shadow-lg'>
+                <nav className='h-full flex flex-col bg-background dark:bg-neutral-900 border-r shadow-lg'>
                     <div className='p-4 pb-2 flex justify-between items-center'>
                         <img src='https://img.logoipsum.com/243.svg'
                             className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`} />
@@ -79,7 +79,7 @@ export const SidebarItem = ({ icon, text, link, active, alert }) => {
         relative flex items-center py-2 px-3 my-1
         font-medium rounded-md cursor-pointer
         transition-colors duration-200 group
-        ${active ? 'dark:bg-neutral-800' : 'hover:bg-indigo-50 dark:hover:bg-neutral-600 text-gray-600 dark:text-white'
+        ${active ? 'dark:bg-neutral-800' : 'hover:bg-indigo-50 dark:hover:bg-neutral-700 text-gray-600 dark:text-white'
             }
         `}>
             <Link to={link} className='flex items-center' >

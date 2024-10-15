@@ -76,8 +76,9 @@ const CommentSection: React.FC<{ postId: number, postTitle: string }> = ({ postI
             <Input placeholder="Write a comment" className="flex-grow" onChange={(e) => { setCommentInput(e.target.value) }} value={commentInput} />
             <Button className="ml-2" variant={'outline'} onClick={handleCommentSubmit}>Comment</Button>
           </div>
-          <ScrollArea style={{ height: scrollAreaHeight }}>
-            <div className="py-3">
+          {/* <ScrollArea style={{ height: scrollAreaHeight }}> */}
+          <ScrollArea>
+            <div className="py-3 max-h-[350px]">
               {Array.isArray(comments) ? (
                 comments.map((comment: any) => (
                   <div key={comment.id} className="flex space-x-4 mb-4">
@@ -98,8 +99,8 @@ const CommentSection: React.FC<{ postId: number, postTitle: string }> = ({ postI
                 <p>No comments available.</p>
               )}
             </div>
-            <div className='absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-background to-transparent pointer-events-none'></div>
-            <div className='absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none'></div>
+            <div className='absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-background/50 to-transparent pointer-events-none'></div>
+            {/* <div className='absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background/50 to-transparent pointer-events-none'></div> */}
           </ScrollArea>
         </div>
       )}

@@ -34,17 +34,17 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             </div>
             <div className='flex items-center px-4'>
               <div>
-            <h1 className="text-xl font-bold">{username}</h1>
-            <p className="text-md">{email}</p>
+                <h1 className="text-xl font-bold">{username}</h1>
+                <p className="text-md">{email}</p>
               </div>
             </div>
-          <div className='flex justify-center items-center'>
-            {!isLocalUser && (
-              <button className="flex items-center justify-center w-[100px] h-[30px] rounded-md bg-blue-500 text-white">
-                Follow
-              </button>
-            )}
-          </div>
+            <div className='flex justify-center items-center'>
+              {!isLocalUser && (
+                <button className="flex items-center justify-center w-[100px] h-[30px] rounded-md bg-blue-500 text-white">
+                  Follow
+                </button>
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -58,7 +58,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         </CardContent>
         {isLocalUser && (
           <div>
-            <button className="w-full bg-red-500 text-white p-2 rounded-b-3xl">
+            <button className="w-full bg-blue-900 text-white p-2 rounded-b-3xl">
               Edit Profile
             </button>
           </div>

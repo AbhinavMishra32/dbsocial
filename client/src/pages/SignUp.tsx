@@ -146,6 +146,19 @@ const SignUp = () => {
               </AlertDescription>
             </Alert>
           )}
+          <div className="flex justify-center items-center">
+            <p>
+              Already have an account?{" "}
+              <Button
+                variant="link"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Sign in
+              </Button>
+            </p>
+          </div>
         </CardFooter>
       </form>
     </Card>

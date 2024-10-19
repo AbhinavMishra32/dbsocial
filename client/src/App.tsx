@@ -1,19 +1,19 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
-import { UserProvider } from './context/UserContext';
-import Dashboard from './pages/Dashboard';
-import Layout from './components/Layout';
-import UserPage from './pages/UserPage';
-import PostPage from './pages/PostPage';
+import { UserProvider } from "./context/UserContext";
+import Dashboard from "./pages/Dashboard";
+import Layout from "./components/Layout";
+import UserPage from "./pages/UserPage";
+import PostPage from "./pages/PostPage";
 
 const App = () => {
   return (
     <UserProvider>
       <BrowserRouter>
         <Routes>
-          <Route element={<Layout />}>
+          <Route element={<Layout children={undefined} />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/" element={<Home />} />
             <Route path="/user/:username" element={<UserPage />} />
@@ -26,4 +26,4 @@ const App = () => {
     </UserProvider>
   );
 };
-export default App
+export default App;

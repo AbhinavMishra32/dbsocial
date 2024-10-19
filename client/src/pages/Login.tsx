@@ -1,22 +1,33 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import {z} from 'zod';
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "../components/ui/card";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 import { Input } from "../components/ui/input";
-import { Label } from '../components/ui/label';
-import {Button} from "../components/ui/button";
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { AlertCircle } from 'lucide-react';
-import axios, { AxiosError } from 'axios';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from '../context/UserContext';
-import { api } from '../services/axios';
-
+import { Label } from "../components/ui/label";
+import { Button } from "../components/ui/button";
+import { Alert, AlertDescription } from "../components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import axios, { AxiosError } from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
+import { api } from "../services/axios";
 
 const schema = z.object({
-    username: z.string().min(4, {message: "Username must contain at least 4 characters"}).max(25, {message: "Username should be under 25 characters"}), // this is for sign up 
-    password: z.string().min(8, { message: "Password must contain at least 8 characters" }),
+  username: z
+    .string()
+    .min(4, { message: "Username must contain at least 4 characters" })
+    .max(25, { message: "Username should be under 25 characters" }), // this is for sign up
+  password: z
+    .string()
+    .min(8, { message: "Password must contain at least 8 characters" }),
 });
 
 type FormFields = z.infer<typeof schema>;
@@ -42,12 +53,16 @@ const SignUp = () => {
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     try {
-      const response = await api.post("/api/user/login", {
-        name: data.username,
-        password: data.password,
-      },{
-        withCredentials: true,
-      });
+      const response = await api.post(
+        "/api/user/login",
+        {
+          name: data.username,
+          password: data.password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
       console.log(response.data);
       const token = response.data.token;
       console.log("Token: ", token);
@@ -69,8 +84,8 @@ const SignUp = () => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const err = error as AxiosError;
-        setError(err.response?.data.message);
-        console.log(err.response?.data.message);
+        setError((err.response?.data as { message: string }).message);
+        console.log((err.response?.data as { message: string }).message);
       } else {
         setError(
           "An error occurred while creating the user. Please try again later."
@@ -80,7 +95,7 @@ const SignUp = () => {
   };
   useEffect(() => {
     console.log("User in useEffect: ", user);
-  }, [user])
+  }, [user]);
 
   return (
     <Card className="w-1/3 mx-auto mt-20">
@@ -148,4 +163,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp
+export default SignUp;

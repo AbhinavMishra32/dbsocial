@@ -15,7 +15,8 @@ app.use(cookieParser());
 
 app.use(cors({
     // origin: '', // for access from anywhere, use '*'
-    origin: process.env.CLIENT_URL,
+    // origin: process.env.CLIENT_URL,
+    origin: 'https://dbsocial.vercel.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
 }))

@@ -34,10 +34,9 @@ export const makePost = async (req: Request, res: Response, next: NextFunction) 
 export const getAllPosts = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const reqWithAddedUser = req as RequestWithAddedUser;
-        // const posts = await prisma.post.findMany({where: {authorId: reqWithAddedUser.addedUser.userId}});
-
         const { username } = reqWithAddedUser.query;
-        if (username) {
+
+        if (username && typeof username === 'string') {
             const openPosts = await prisma.post.findMany({
                 where: {
                     author: {
@@ -68,8 +67,7 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
             score: ranker(post.likes, post.comments.length, post.createdAt)
         }));
 
-        rankedPosts.sort((a,b) => b.score - a.score);
-        // console.log(rankedPosts);
+        rankedPosts.sort((a, b) => b.score - a.score);
 
         res.status(200).json({ posts: rankedPosts });
     } catch (error) {

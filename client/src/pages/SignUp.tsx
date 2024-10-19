@@ -15,12 +15,13 @@ import { Button } from "../components/ui/button";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import axios, { AxiosError } from "axios";
+import { api } from "@/services/axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const api = axios.create({
-  baseURL: "http://localhost:3000", // put this in env for hosting
-});
+// const api = axios.create({
+//   baseURL: "http://localhost:3000", // put this in env for hosting
+// });
 
 const schema = z.object({
   username: z

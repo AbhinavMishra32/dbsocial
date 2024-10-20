@@ -98,81 +98,91 @@ const SignUp = () => {
   }, [user]);
 
   return (
-    <Card className="w-1/3 mx-auto mt-20">
-      <CardHeader>
-        <CardTitle>Sign in</CardTitle>
-        <CardDescription>Sign in to access Vibely</CardDescription>
-      </CardHeader>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CardContent>
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="email">Username</Label>
-              <Input
-                {...register("username")}
-                id="username"
-                placeholder="Username"
-              />
-              {errors.username && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4"></AlertCircle>
-                  <AlertDescription>
-                    {errors.username.message && (
-                      <p>{errors.username.message}</p>
-                    )}
-                  </AlertDescription>
-                </Alert>
-              )}
+    <>
+      <Card className="w-1/3 mx-auto mt-20 mb-10">
+        <CardHeader>
+          <CardTitle>Sign in</CardTitle>
+          <CardDescription>Sign in to access Vibely</CardDescription>
+        </CardHeader>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CardContent>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="email">Username</Label>
+                <Input
+                  {...register("username")}
+                  id="username"
+                  placeholder="Username"
+                />
+                {errors.username && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4"></AlertCircle>
+                    <AlertDescription>
+                      {errors.username.message && (
+                        <p>{errors.username.message}</p>
+                      )}
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  {...register("password")}
+                  type="password"
+                  id="password"
+                  placeholder="Password"
+                />
+                {errors.password && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4"></AlertCircle>
+                    <AlertDescription>
+                      {errors.password.message && (
+                        <p>{errors.password.message}</p>
+                      )}
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
             </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                {...register("password")}
-                type="password"
-                id="password"
-                placeholder="Password"
-              />
-              {errors.password && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4"></AlertCircle>
-                  <AlertDescription>
-                    {errors.password.message && (
-                      <p>{errors.password.message}</p>
-                    )}
-                  </AlertDescription>
-                </Alert>
-              )}
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+            <Button disabled={isSubmitting} className="w-full">
+              {isSubmitting ? "Loading..." : "Sign in"}
+            </Button>
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4"></AlertCircle>
+                <AlertDescription>
+                  <p>{error}</p>
+                </AlertDescription>
+              </Alert>
+            )}
+            <div className="flex justify-center items-center">
+              <p>
+                Don't have an account?{" "}
+                <Button
+                  variant="link"
+                  onClick={() => {
+                    navigate("/signup");
+                  }}
+                >
+                  Sign up
+                </Button>
+              </p>
             </div>
+          </CardFooter>
+        </form>
+      </Card>
+      <div className="w-1/3 mx-auto">
+        <div className="flex items-center justify-center">
+          <div className="flex items-center bg-black py-2 px-4 rounded-full">
+            <img src="/dblogo.jpg" alt="logo" className="w-10 h-10 mr-2" />
+            <div className="text-lg">Double Bracket</div>
           </div>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
-          <Button disabled={isSubmitting} className="w-full">
-            {isSubmitting ? "Loading..." : "Sign in"}
-          </Button>
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4"></AlertCircle>
-              <AlertDescription>
-                <p>{error}</p>
-              </AlertDescription>
-            </Alert>
-          )}
-          <div className="flex justify-center items-center">
-            <p>
-              Don't have an account?{" "}
-              <Button
-                variant="link"
-                onClick={() => {
-                  navigate("/signup");
-                }}
-              >
-                Sign up
-              </Button>
-            </p>
-          </div>
-        </CardFooter>
-      </form>
-    </Card>
+        </div>
+      </div>
+    </>
   );
 };
 

@@ -23,6 +23,7 @@ export const makePost = async (req: Request, res: Response, next: NextFunction) 
                     connect: { id: reqWithAddedUser.addedUser.userId },
                 },
             },
+            include: { author: true }
         });
         res.status(201).json({ message: "Post created successfully.", post });
     }

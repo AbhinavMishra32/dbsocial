@@ -1,24 +1,37 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import {z} from 'zod';
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "../components/ui/card";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 import { Input } from "../components/ui/input";
-import { Label } from '../components/ui/label';
-import {Button} from "../components/ui/button";
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { AlertCircle } from 'lucide-react';
-import axios, { AxiosError } from 'axios';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Label } from "../components/ui/label";
+import { Button } from "../components/ui/button";
+import { Alert, AlertDescription } from "../components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import axios, { AxiosError } from "axios";
+import { api } from "@/services/axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const api = axios.create({
-    baseURL: "http://localhost:3000" // put this in env for hosting
-});
+// const api = axios.create({
+//   baseURL: "http://localhost:3000", // put this in env for hosting
+// });
 
 const schema = z.object({
-    username: z.string().min(4, {message: "Username must contain at least 4 characters"}).max(25, {message: "Username should be under 25 characters"}), // this is for sign up 
-    email: z.string().email(),
-    password: z.string().min(8, { message: "Password must contain at least 8 characters" }),
+  username: z
+    .string()
+    .min(4, { message: "Username must contain at least 4 characters" })
+    .max(25, { message: "Username should be under 25 characters" }), // this is for sign up
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(8, { message: "Password must contain at least 8 characters" }),
 });
 
 type FormFields = z.infer<typeof schema>;
@@ -49,8 +62,8 @@ const SignUp = () => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const err = error as AxiosError;
-        setError(err.response?.data.message);
-        console.log(err.response?.data.message);
+        setError((err.response?.data as { message: string }).message);
+        console.log((err.response?.data as { message: string }).message);
       } else {
         setError(
           "An error occurred while creating the user. Please try again later."
@@ -134,10 +147,23 @@ const SignUp = () => {
               </AlertDescription>
             </Alert>
           )}
+          <div className="flex justify-center items-center">
+            <p>
+              Already have an account?{" "}
+              <Button
+                variant="link"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Sign in
+              </Button>
+            </p>
+          </div>
         </CardFooter>
       </form>
     </Card>
   );
 };
 
-export default SignUp
+export default SignUp;

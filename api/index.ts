@@ -5,6 +5,8 @@ import publicUserRouter from './routes/publicUser.js';
 import { CustomError } from './utils/error.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const PORT = 3000;
@@ -12,7 +14,9 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: 'http://localhost:5173', // for access from anywhere, use '*'
+    // origin: '', // for access from anywhere, use '*'
+    // origin: process.env.CLIENT_URL,
+    origin: 'https://dbsocial.vercel.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
 }))

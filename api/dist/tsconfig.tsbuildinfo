@@ -1,1 +1,1 @@
-{"root":["../config.ts","../index.ts","../prisma.ts","../controller/posts.controller.ts","../controller/ranker.ts","../controller/user.controller.ts","../routes/posts.ts","../routes/publicuser.ts","../routes/user.ts","../utils/error.ts"],"errors":true,"version":"5.6.2"}
+{"root":["../config.ts","../index.ts","../prisma.ts","../controller/posts.controller.ts","../controller/ranker.ts","../controller/user.controller.ts","../routes/posts.ts","../routes/publicuser.ts","../routes/user.ts","../utils/error.ts"],"version":"5.6.2"}

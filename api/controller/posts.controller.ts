@@ -35,8 +35,11 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
     try {
         const reqWithAddedUser = req as RequestWithAddedUser;
         const { username } = reqWithAddedUser.query;
+        if (username) {
+            if (typeof username !== 'string') {
+                return res.status(400).json({ message: "Invalid username parameter." });
+            }
 
-        if (username && typeof username === 'string') {
             const openPosts = await prisma.post.findMany({
                 where: {
                     author: {
@@ -68,6 +71,7 @@ export const getAllPosts = async (req: Request, res: Response, next: NextFunctio
         }));
 
         rankedPosts.sort((a, b) => b.score - a.score);
+        // console.log(rankedPosts);
 
         res.status(200).json({ posts: rankedPosts });
     } catch (error) {

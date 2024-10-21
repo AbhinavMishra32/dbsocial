@@ -25,7 +25,7 @@ const Layout = ({ children }) => {
     }
   }, [user]);
   return (
-    <div className="flex h-screen">
+    <div className="flex gap-5 h-screen">
       <Sidebar>
         <SidebarItem
           icon={<Home size={20} />}
@@ -57,7 +57,8 @@ const Layout = ({ children }) => {
           alert={undefined}
         />
       </Sidebar>
-      <div className="w-19 bg-red-300"></div>
+      {/* this is the div that is under the sidebar to push the content to the right */}
+      <div className="w-[75px]"></div>
       <div className="flex flex-col flex-grow items-center pt-16">
         <Navbar />
         <div className="w-full max-w-3xl">

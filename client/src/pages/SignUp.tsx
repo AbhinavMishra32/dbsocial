@@ -77,7 +77,7 @@ const SignUp = () => {
 
   return (
     <>
-      <Card className="w-1/3 mx-auto mt-20 mb-10">
+      <Card className="w-full max-w-md mx-auto mt-20 mb-10 px-4 sm:px-0">
         <CardHeader>
           <CardTitle>Create an Account</CardTitle>
           <CardDescription>Create an account to start posting</CardDescription>
@@ -164,9 +164,9 @@ const SignUp = () => {
           </CardFooter>
         </form>
       </Card>
-      <div className="w-1/3 mx-auto">
+      <div className="w-full mx-auto">
         <div className="flex items-center justify-center">
-          <div className="flex items-center bg-black py-2 px-4 rounded-full">
+          <div className="flex items-center bg-black py-2 px-4 rounded-full border">
             <img src="/dblogo.jpg" alt="logo" className="w-10 h-10 mr-2" />
             <div className="text-lg">Double Bracket</div>
           </div>

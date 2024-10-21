@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { api } from '../services/axios';
-import { useParams } from 'react-router-dom';
-import { useUser } from '../context/UserContext';
-import PostsView from '../components/PostsView';
+import React, { useEffect, useState } from "react";
+import { api } from "../services/axios";
+import { useParams } from "react-router-dom";
+import { useUser } from "../context/UserContext";
+import PostsView from "../components/PostsView";
 
 const PostPage = () => {
   const { user } = useUser();
@@ -45,7 +45,7 @@ const PostPage = () => {
       {loadingPost ? (
         <p>Loading...</p>
       ) : (
-        <div className='mt-10'>
+        <div className="mt-10 mr-4">
           <PostsView posts={post} isLoading={loadingPost} />
         </div>
       )}
@@ -53,4 +53,4 @@ const PostPage = () => {
   );
 };
 
-export default PostPage
+export default PostPage;

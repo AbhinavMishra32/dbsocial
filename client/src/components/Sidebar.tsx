@@ -36,12 +36,19 @@ export const Sidebar = ({ children }) => {
       <aside className="flex h-full fixed top-0 left-0 z-50">
         <nav className="h-full flex flex-col bg-background dark:bg-neutral-900 border-r shadow-lg">
           <div className="p-4 pb-2 flex justify-between items-center">
-            <img
+            {/* <img
               src="https://img.logoipsum.com/243.svg"
               className={`overflow-hidden transition-all ${
                 expanded ? "w-32" : "w-0"
               }`}
-            />
+            /> */}
+            <div
+              className={`flex flex-col overflow-hidden ${
+                expanded ? "" : "hidden"
+              }`}
+            >
+              <h2 className="text-xl">〈 〉Double Bracket</h2>
+            </div>
             <button
               onClick={() => setExpanded((curr) => !curr)}
               className="p-1.5 rounded-lg bg-gray-50 dark:bg-neutral-900 hover:bg-gray-100 dark:hover:bg-neutral-800"

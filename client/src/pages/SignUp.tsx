@@ -149,7 +149,7 @@ const SignUp = () => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
-              <Button disabled={isSubmitting} className="w-full">
+              <Button disabled={isSubmitting} className="w-full bg-gradient-to-t from-indigo-900 to-indigo-600  text-white">
                 {isSubmitting ? "Loading..." : "Create Account"}
               </Button>
               {error && (

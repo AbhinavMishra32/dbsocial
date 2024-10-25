@@ -99,7 +99,9 @@ const SignUp = () => {
 
   return (
     <>
-      <div className="h-screen bg-gradient-to-b from-black from-30% to-neutral-800">
+      <div className="h-screen bg-gradient-to-b from-black from-50% to-indigo-950">
+        {/* without this character (empty character), the div isnt going full screen */}
+        <div>‎</div>
         <Card className="w-full max-w-md mx-auto mt-20 mb-10 px-4 sm:px-0">
           <CardHeader>
             <CardTitle>Sign in</CardTitle>

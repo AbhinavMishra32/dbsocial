@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Sidebar, SidebarItem } from "./Sidebar";
 import {
-  BarChart3,
   Home,
-  LayoutDashboard,
-  PlusCircle,
+  Plus,
   Settings,
   User,
+  UserCircle,
+  UserCog,
+  UserPlus,
+  UserPlus2,
+  Users,
+  UserX,
 } from "lucide-react";
 import { useUser } from "../context/UserContext";
 import { Outlet, useLocation } from "react-router-dom";
@@ -42,9 +46,16 @@ const Layout = ({ children }) => {
           alert
           active={isActive(`/user/${username}`)}
         />
-        <SidebarItem
-          icon={<PlusCircle size={20} />}
+        {/* <SidebarItem
+          icon={<Plus size={20} />}
           text="Create Post"
+          link={undefined}
+          active={undefined}
+          alert={undefined}
+        /> */}
+        <SidebarItem
+          icon={<Users size={20} />}
+          text="Your Followers"
           link={undefined}
           active={undefined}
           alert={undefined}

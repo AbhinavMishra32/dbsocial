@@ -33,15 +33,18 @@ export const Sidebar = ({ children }) => {
 
   return (
     <>
-      <aside className="flex h-full fixed top-0 left-0 z-50">
-        <nav className="h-full flex flex-col bg-background dark:bg-neutral-900 border-r shadow-lg">
+      {expanded && (
+        <div className="fixed inset-0 bg-black opacity-50 z-40 md:hidden" onClick={() => setExpanded(false)}></div>
+      )}
+      <button
+        onClick={() => setExpanded(true)}
+        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-50 dark:bg-neutral-900 hover:bg-gray-100 dark:hover:bg-neutral-800"
+      >
+        <ChevronLast />
+      </button>
+      <aside className={`h-full fixed top-0 left-0 z-50 transform ${expanded ? "translate-x-0" : "-translate-x-full"} transition-transform md:translate-x-0`}>
+        <nav className="h-full flex flex-col bg-gradient-to-t from-indigo-950/40 to-black/70 bg-black/20 backdrop-blur-lg border-r shadow-lg">
           <div className="p-4 pb-2 flex justify-between items-center">
-            {/* <img
-              src="https://img.logoipsum.com/243.svg"
-              className={`overflow-hidden transition-all ${
-                expanded ? "w-32" : "w-0"
-              }`}
-            /> */}
             <div
               className={`flex flex-col overflow-hidden ${expanded ? "" : "hidden"
                 }`}
@@ -64,14 +67,10 @@ export const Sidebar = ({ children }) => {
                 username
               )}&background=random`}
               alt=""
-              className="w-10 h-10 rounded-full mr-3"
+              className={`w-10 h-10 rounded-full mr-3 ${expanded ? "mr-3" : "mr-0"}`}
             />
             <div
-              className={`
-                        flex justify-between items-center
-                        overflow-hidden transition-all ${expanded ? "w-32" : "w-0"
-                }
-                        `}
+              className={`flex justify-between items-center overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`}
             >
               <div className="leading-4">
                 <h4 className="font-semibold">{username}</h4>
@@ -117,21 +116,21 @@ export const SidebarItem = ({ icon, text, link, active, alert }) => {
       <Link to={link} className="flex items-center">
         {icon}
         <span
-          className={` overflow-hidden transition-all
+          className={` overflow-hidden transition-all whitespace-nowrap
             ${expanded ? "w-52 ml-3" : "w-0"}`}
         >
           {text}
         </span>
         {alert && (
           <div
-            className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${expanded ? "" : "top-2"
+            className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${expanded ? "" : "top-2 transform"
               }`}
           />
         )}
       </Link>
 
       {!expanded && (
-        <div
+        < div
           className={`absolute left-full top-auto transform -translate-y-1/2
           rounded-md px-2 py-1 ml-6
           bg-indigo-100 text-indigo-800 text-sm
@@ -142,7 +141,8 @@ export const SidebarItem = ({ icon, text, link, active, alert }) => {
         >
           {text}
         </div>
-      )}
-    </li>
+      )
+      }
+    </li >
   );
 };

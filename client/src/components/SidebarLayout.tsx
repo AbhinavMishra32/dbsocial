@@ -19,9 +19,8 @@ export const SidebarLayout = ({ children }) => {
           <div className="p-4 pb-2 flex justify-between items-center">
             <img
               src="https://img.logoipsum.com/243.svg"
-              className={`overflow-hidden transition-all ${
-                expanded ? "w-32" : "w-0"
-              }`}
+              className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"
+                }`}
             />
             <button
               onClick={() => setExpanded((curr) => !curr)}
@@ -39,14 +38,13 @@ export const SidebarLayout = ({ children }) => {
                 user.username
               )}&background=random`}
               alt=""
-              className="w-10 h-10 rounded-md"
+              className="w-10 h-10 rounded-md bg-red-400"
             />
             <div
               className={`
                         flex justify-between items-center
-                        overflow-hidden transition-all ${
-                          expanded ? "w-32" : "w-0"
-                        }
+                        overflow-hidden transition-all ${expanded ? "w-32" : "w-0"
+                }
                         `}
             >
               <div className="leading-4">
@@ -72,10 +70,9 @@ export const SidebarItem = ({ icon, text, active, alert }) => {
         relative flex items-center py-2 px-3 my-1
         font-medium rounded-md cursor-pointer
         transition-colors duration-200
-        ${
-          active
-            ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
-            : "hover:bg-indigo-50 text-gray-600"
+        ${active
+          ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
+          : "hover:bg-indigo-50 text-gray-600"
         }
         `}
     >
@@ -88,9 +85,8 @@ export const SidebarItem = ({ icon, text, active, alert }) => {
       </span>
       {alert && (
         <div
-          className={`absolute ${
-            expanded ? "right-2" : "right-0 top-0"
-          } w-2 h-2 rounded bg-indigo-400`}
+          className={`absolute ${expanded ? "right-2" : "right-0 top-0"
+            } w-2 h-2 rounded bg-indigo-400`}
         />
       )}
     </li>

@@ -98,11 +98,10 @@ const SignUp = () => {
   }, [user]);
 
   return (
-    <>
-      <div className="h-screen bg-gradient-to-b from-black from-50% to-indigo-950">
+          <div className="h-screen px-4 bg-gradient-to-b from-indigo-950/80 via-black via-50% to-indigo-950/40">
         {/* without this character (empty character), the div isnt going full screen */}
         <div>‎</div>
-        <Card className="w-full max-w-md mx-auto mt-20 mb-10 px-4 sm:px-0">
+        <Card className="w-full max-w-md mx-auto mt-20 mb-10 sm:px-4 px-0 bg-black/30 backdrop-blur-xl" style={{ boxShadow: "0px 0px 60px 3px rgba(0,0,0,0.3)" }}>
           <CardHeader>
             <CardTitle>Sign in</CardTitle>
             <CardDescription>Sign in to access DB Social</CardDescription>
@@ -116,6 +115,7 @@ const SignUp = () => {
                     {...register("username")}
                     id="username"
                     placeholder="Username"
+                    className="bg-inherit"
                   />
                   {errors.username && (
                     <Alert variant="destructive">
@@ -135,6 +135,7 @@ const SignUp = () => {
                     type="password"
                     id="password"
                     placeholder="Password"
+                    className="bg-inherit"
                   />
                   {errors.password && (
                     <Alert variant="destructive">
@@ -150,7 +151,7 @@ const SignUp = () => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
-              <Button disabled={isSubmitting} className="w-full">
+              <Button disabled={isSubmitting} className="w-full bg-gradient-to-t from-indigo-900 to-indigo-600  text-white">
                 {isSubmitting ? "Loading..." : "Sign in"}
               </Button>
               {error && (

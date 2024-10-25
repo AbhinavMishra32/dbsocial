@@ -30,7 +30,7 @@ const Layout = ({ children }) => {
     }
   }, [user]);
   return (
-    <div className="flex gap-5 h-screen">
+    <div className="flex h-screen">
       <Sidebar>
         <SidebarItem
           icon={<Home size={20} />}

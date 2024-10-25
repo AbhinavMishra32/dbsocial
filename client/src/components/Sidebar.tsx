@@ -2,18 +2,21 @@ import { ChevronFirst, ChevronLast, MoreVertical } from "lucide-react";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
 import { Link } from "react-router-dom";
+import { SidebarExpandContext } from "./Navbar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
 } from "./ui/dropdown-menu";
 import { DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { useSidebarExpand } from "@/context/SidebarExpandContext";
 
-export const SidebarContext = createContext({ expanded: false });
+// export const SidebarContext = createContext({ expanded: false });
 
 export const Sidebar = ({ children }) => {
   const { user, setUser } = useUser();
-  const [expanded, setExpanded] = useState(false);
+  const { expanded, setExpanded } = useSidebarExpand();
+  // const [expanded, setExpanded] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
 
@@ -39,12 +42,12 @@ export const Sidebar = ({ children }) => {
         }`}
         onClick={() => setExpanded(false)}
       ></div>
-      <button
+      {/* <button
         onClick={() => setExpanded(true)}
         className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-50 dark:bg-neutral-900 hover:bg-gray-100 dark:hover:bg-neutral-800"
       >
         <ChevronLast />
-      </button>
+      </button> */}
       <aside
         className={`h-full fixed top-0 left-0 z-50 transform ${
           expanded ? "translate-x-0" : "-translate-x-full"
@@ -66,9 +69,9 @@ export const Sidebar = ({ children }) => {
               {expanded ? <ChevronFirst /> : <ChevronLast />}
             </button>
           </div>
-          <SidebarContext.Provider value={{ expanded }}>
+          <SidebarExpandContext.Provider value={{ expanded }}>
             <ul className="flex-1 px-3">{children}</ul>
-          </SidebarContext.Provider>
+          </SidebarExpandContext.Provider>
           <div className="border-t flex p-3">
             <img
               src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -113,7 +116,7 @@ export const Sidebar = ({ children }) => {
 };
 
 export const SidebarItem = ({ icon, text, link, active, alert }) => {
-  const { expanded } = useContext(SidebarContext);
+  const { expanded } = useSidebarExpand();
   return (
     <li
       className={`

@@ -7,22 +7,25 @@ import Dashboard from "./pages/Dashboard";
 import Layout from "./components/Layout";
 import UserPage from "./pages/UserPage";
 import PostPage from "./pages/PostPage";
+import { SidebarProvider } from "./context/SidebarExpandContext";
 
 const App = () => {
   return (
     <UserProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<Layout children={undefined} />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/" element={<Home />} />
-            <Route path="/user/:username" element={<UserPage />} />
-            <Route path="/post/:postId" element={<PostPage />} />
-          </Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-        </Routes>
-      </BrowserRouter>
+      <SidebarProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<Layout children={undefined} />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/user/:username" element={<UserPage />} />
+              <Route path="/post/:postId" element={<PostPage />} />
+            </Route>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+          </Routes>
+        </BrowserRouter>
+      </SidebarProvider>
     </UserProvider>
   );
 };

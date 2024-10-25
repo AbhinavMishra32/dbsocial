@@ -81,7 +81,7 @@ const Dashboard = () => {
   // console.log("Refresh token: ", refreshTokenValue);
   return (
     <>
-      <div className="md:mx-10 mr-5">
+      <div className="md:mx-10 px-4">
         <div>
           <h1 className="text-4xl py-4">Home</h1>
         </div>

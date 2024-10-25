@@ -125,8 +125,8 @@ export const SidebarItem = ({ icon, text, link, active, alert }) => {
         transition-colors duration-200 group
         ${
           active
-            ? "dark:bg-neutral-800"
-            : "hover:bg-indigo-50 dark:hover:bg-neutral-700 text-gray-600 dark:text-white"
+            ? "dark:bg-indigo-800"
+            : "hover:bg-indigo-50 dark:hover:bg-indigo-800/40 text-gray-600 dark:text-white"
         }
         `}
     >

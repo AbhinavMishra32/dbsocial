@@ -19,16 +19,16 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({
-    // origin: '', // for access from anywhere, use '*'
-    origin: CLIENT_URL,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-}))
+app.use(
+    cors({
+        origin: CLIENT_URL,
+        credentials: true,
+    })
+);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    console.log(`Client URL: ${CLIENT_URL}`);
+    console.log(`CORS URL: ${CLIENT_URL}`);
 });
 
 app.use('/api/user', userRouter);

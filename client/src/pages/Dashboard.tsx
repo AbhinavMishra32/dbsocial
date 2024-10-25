@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useUser } from '../context/UserContext';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '../components/ui/button';
-import { api } from '../services/axios';
-import PostsView from '../components/PostsView';
-import { Textarea } from '../components/ui/textarea';
-import { Input } from '../components/ui/input';
+import { useEffect, useState } from "react";
+import { useUser } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../components/ui/button";
+import { api } from "../services/axios";
+import PostsView from "../components/PostsView";
+import { Textarea } from "../components/ui/textarea";
+import { Input } from "../components/ui/input";
 
 const Dashboard = () => {
   const { setUser, user } = useUser();
@@ -68,8 +68,7 @@ const Dashboard = () => {
             setUser(null);
           }
           console.error("Error fetching posts: ", error);
-        }
-        finally {
+        } finally {
           setLoading(false);
         }
       };
@@ -82,25 +81,38 @@ const Dashboard = () => {
   // console.log("Refresh token: ", refreshTokenValue);
   return (
     <>
-    <div className='md:mx-10 sm:ml-24 mr-5'>
-      <div>
-        <h1 className="text-4xl py-4">Home</h1>
-      </div>
-      <div className='p-4 flex flex-col gap-2 border-2 rounded-xl my-3'>
-        <h3 className='pb-3 font-medium'>What's on your mind?</h3>
-        <Input type="text" onChange={(e) => { setTitle(e.target.value) }} value={title} placeholder='Title' />
-        <Textarea onChange={(e) => { setNewPost(e.target.value) }} value={newPost} placeholder='Enter Post'></Textarea>
-        <Button onClick={handlePostSubmit}>Post</Button>
-      </div>
-      {error && (
+      <div className="md:mx-10 mr-5">
         <div>
-          <p>{error}</p>
+          <h1 className="text-4xl py-4">Home</h1>
         </div>
-      )}
-      <PostsView posts={posts} isLoading={loading} />
+        <div className="p-4 flex flex-col gap-2 border-2 rounded-xl my-3">
+          <h3 className="pb-3 font-medium">What's on your mind?</h3>
+          <Input
+            type="text"
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+            value={title}
+            placeholder="Title"
+          />
+          <Textarea
+            onChange={(e) => {
+              setNewPost(e.target.value);
+            }}
+            value={newPost}
+            placeholder="Enter Post"
+          ></Textarea>
+          <Button onClick={handlePostSubmit}>Post</Button>
+        </div>
+        {error && (
+          <div>
+            <p>{error}</p>
+          </div>
+        )}
+        <PostsView posts={posts} isLoading={loading} />
       </div>
     </>
-  )
-}
+  );
+};
 
 export default Dashboard;

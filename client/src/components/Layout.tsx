@@ -70,7 +70,7 @@ const Layout = ({ children }) => {
         />
       </Sidebar>
       {/* this is the div that is under the sidebar to push the content to the right */}
-      <div className="w-[75px]"></div>
+      <div className="md:w-[75px]"></div>
       <div className="flex flex-col flex-grow items-center pt-16">
         {!excludeNavbarPath.includes(location.pathname) && <Navbar />}
         <div className="w-full max-w-3xl">

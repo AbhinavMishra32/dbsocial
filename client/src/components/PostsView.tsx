@@ -167,17 +167,19 @@ const FullPostView = ({ post, user }) => (
 );
 
 const PostPreview = ({ post, user }) => (
-  <div className="hover:bg-neutral-800 transition-colors duration-300">
+  <div className="hover:bg-neutral-800 transition-colors duration-300 overflow-hidden">
     <Link to={`/post/${post.id}`} className="block">
       <CardTitle className="p-4 flex flex-col gap-4">
         <AuthorInfo post={post} />
-        <h2 className="text-xl font-semibold text-neutral-100">{post.title}</h2>
+        <h2 className="text-xl font-semibold text-neutral-100 break-all">
+          {post.title}
+        </h2>
       </CardTitle>
       <CardContent className="p-4 text-neutral-300 line-clamp-3">
         {post.content}
       </CardContent>
     </Link>
-    <CardFooter className="flex items-center justify-between p-4 bg-neutral-800">
+    <CardFooter className="flex flex-wrap items-center justify-between p-4 bg-neutral-800">
       <FetchLikes post={post} user={user} />
       <Link to={`/post/${post.id}`} className="text-sm text-neutral-400">
         Read more →

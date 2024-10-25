@@ -11,12 +11,16 @@ const Navbar = () => {
   let lastScrollY = window.scrollY;
 
   const handleScroll = () => {
-    if (window.scrollY > lastScrollY) {
-      setShowNavbar(false);
-    } else if (window.scrollY + 20 < lastScrollY || window.scrollY === 0) {
+    if (window.innerWidth >= 768) {
       setShowNavbar(true);
+    } else {
+      if (window.scrollY > lastScrollY) {
+        setShowNavbar(false);
+      } else if (window.scrollY + 20 < lastScrollY || window.scrollY === 0) {
+        setShowNavbar(true);
+      }
+      lastScrollY = window.scrollY;
     }
-    lastScrollY = window.scrollY;
   };
 
   useEffect(() => {
